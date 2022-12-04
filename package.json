@@ -1,0 +1,44 @@
+{
+  "name": "discordmc",
+  "version": "0.0.1",
+  "description": "Discord API for Minecraft Scripting",
+  "scripts": {
+    "test": "tsc",
+    "build-mc": "npx webpack --env platform=server-net",
+    "build-node": "npx webpack --env platform=node"
+  },
+  "main": "./dist/src-node/index.js",
+  "types": "./typings/src-node/Main.d.ts",
+  "directories": {
+    "lib": "src",
+    "test": "test"
+  },
+  "files": [
+    "dist",
+    "typings"
+  ],
+  "keywords": [
+    "discord",
+    "api",
+    "bot",
+    "server",
+    "minecraft",
+    "discordapp"
+  ],
+  "author": "Jayly",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@minecraft/server-admin": "^1.0.0-beta.11940b24",
+    "@minecraft/server-net": "^1.0.0-beta.11940b24",
+    "axios": "^1.2.0",
+    "big-integer": "^1.6.51",
+    "deep-copy": "^1.4.2",
+    "discord-api-types": "^0.37.20"
+  },
+  "devDependencies": {
+    "source-map": "^0.7.4",
+    "terser-webpack-plugin": "^5.3.6",
+    "ts-loader": "^9.4.1",
+    "webpack": "^5.75.0"
+  }
+}
