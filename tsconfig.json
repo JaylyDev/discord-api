@@ -10,6 +10,7 @@
     // Ensure that Babel can safely transpile files in the TypeScript project
     "isolatedModules": true,
     "declarationDir": "dist/typings",
-    "sourceMap": true
+    "sourceMap": true,
+    "lib": ["DOM"]
   }
 }
