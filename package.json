@@ -30,7 +30,7 @@
   "dependencies": {
     "@minecraft/server-admin": "^1.0.0-beta.11940b24",
     "@minecraft/server-net": "^1.0.0-beta.11940b24",
-    "axios": "^1.2.0",
+    "axios": "^1.2.1",
     "big-integer": "^1.6.51",
     "discord-api-types": "^0.37.20",
     "querystring": "^0.2.1"
