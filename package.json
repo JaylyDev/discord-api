@@ -1,6 +1,6 @@
 {
   "name": "discordmc",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Discord API for Minecraft Scripting",
   "scripts": {
     "test": "tsc",
@@ -32,8 +32,8 @@
     "@minecraft/server-net": "^1.0.0-beta.11940b24",
     "axios": "^1.2.0",
     "big-integer": "^1.6.51",
-    "deep-copy": "^1.4.2",
-    "discord-api-types": "^0.37.20"
+    "discord-api-types": "^0.37.20",
+    "querystring": "^0.2.1"
   },
   "devDependencies": {
     "source-map": "^0.7.4",

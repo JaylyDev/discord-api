@@ -2,6 +2,7 @@ import type { Snowflake, RESTGetAPIGuildQuery, RESTGetAPIAuditLogQuery } from "d
 import { HttpRequestMethod } from "../Constants";
 import { CHANNEL, GUILD, GUILD_AUDIT_LOGS } from "../Endpoints";
 import { InternalCallback } from "../Constants";
+import * as querystring from 'querystring';
 
 /**
  * https://discord.com/developers/docs/resources/guild#get-guild
@@ -13,8 +14,11 @@ import { InternalCallback } from "../Constants";
  */
 export function GetGuild(guildId: Snowflake, options: RESTGetAPIGuildQuery, BOT_TOKEN: string, callback: InternalCallback): Promise<string> {
   const method = HttpRequestMethod.GET;
-  const path = GUILD(guildId);
-  return callback(path, options, method, BOT_TOKEN);
+  let path = GUILD(guildId);
+
+  if (typeof options === 'object') path += '?' + querystring.stringify(options as any);
+
+  return callback(path, method, BOT_TOKEN);
 }
 
 /**
@@ -22,12 +26,15 @@ export function GetGuild(guildId: Snowflake, options: RESTGetAPIGuildQuery, BOT_
  */
 export function GetGuildAuditLog(guildId: Snowflake, options: RESTGetAPIAuditLogQuery, BOT_TOKEN: string, callback: InternalCallback): Promise<string> {
   const method = HttpRequestMethod.GET;
-  const path = GUILD_AUDIT_LOGS(guildId);
-  return callback(path, options, method, BOT_TOKEN);
+  let path = GUILD_AUDIT_LOGS(guildId);
+
+  if (typeof options === 'object') path += '?' + querystring.stringify(options as any);
+
+  return callback(path, method, BOT_TOKEN);
 }
 
 export function GetChannel(channelId: Snowflake, BOT_TOKEN: string, callback: InternalCallback) {
   const method = HttpRequestMethod.GET;
   const path = CHANNEL(channelId);
-  return callback(path, undefined, method, BOT_TOKEN);
+  return callback(path, method, BOT_TOKEN);
 }

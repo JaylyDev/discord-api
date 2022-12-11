@@ -13,10 +13,8 @@ const Configuration = {
    * @type {import('webpack').Configuration}
    */
   'server-net': {
-    entry: {
-      "server-net": "./src-minecraft/index.ts",
-    },
-    // devtool: 'inline-source-map',
+    entry: "./src-minecraft/index.ts",
+    devtool: "source-map",
     mode: "production",
     target: ["es2020"],
     // ------ ^
@@ -87,7 +85,7 @@ const Configuration = {
       extensions: [".tsx", ".ts", ".js"],
     },
     optimization: {
-      minimize: true,
+      minimize: false,
       minimizer: [
         new TerserPlugin({
           terserOptions: {
@@ -110,6 +108,9 @@ const Configuration = {
 module.exports = (env) => {
   if (Object.keys(Configuration).includes(env.platform)) {
     console.log(`Platform: ${env.platform}`);
+
+    // env.entry
+    if (!!env.entry) Configuration[env.platform].entry = env.entry;
 
     return Configuration[env.platform];
   } else throw new TypeError(`Invalid platform. Accept values for "platform": ${Object.keys(Configuration).join(', ')}. Received ${env.platform}.`);

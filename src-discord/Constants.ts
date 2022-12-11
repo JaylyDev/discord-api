@@ -5,13 +5,13 @@ export const BASE_URL = "/api/v" + API_VERSION;
 export const CDN_URL = "https://cdn.discordapp.com";
 export const CLIENT_URL = "https://discord.com";
 
-export const Package = { homepage: "http://localhost:3000", version: "1.0.0", };
+export const Package = { homepage: "https://www.npmjs.com/package/minecraft-extra", version: "0.0.2", };
 export const UserAgent = { ag: 'cpprestsdk', version: '2.9.0' };
 
 export const ServerNetDebug = new Debug('server-net');
 export const NodeDebug = new Debug('node');
 
-export type InternalCallback = (url: string, body: object, method: HttpRequestMethod, BOT_TOKEN: string) => Promise<string>;
+export type InternalCallback = (url: string, method: HttpRequestMethod, BOT_TOKEN: string, body?: object) => Promise<string>;
 
 export enum HttpRequestMethod {
   /**

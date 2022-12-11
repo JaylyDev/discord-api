@@ -1,4 +1,4 @@
-import { BASE_URL, Package, API_VERSION, CLIENT_URL, NodeDebug } from '../src-discord/Constants';
+import { BASE_URL, Package, CLIENT_URL, NodeDebug } from '../src-discord/Constants';
 import { HttpRequestMethod } from '../src-discord/Constants';
 import Axios, { AxiosRequestConfig } from 'axios';
 
@@ -9,7 +9,7 @@ import Axios, { AxiosRequestConfig } from 'axios';
 * @param body
 * JSON body, check https://discord.com/developers/docs
 */
-export default async function fetch(url: string, body: object, method: HttpRequestMethod, BOT_TOKEN: string): Promise<string> {
+export default async function fetch(url: string, method: HttpRequestMethod, BOT_TOKEN: string, body?: object): Promise<string> {
   const fetchUrl = CLIENT_URL + BASE_URL + url;
   const options: AxiosRequestConfig = {
     headers: {
