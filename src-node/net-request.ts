@@ -8,6 +8,7 @@ import Axios, { AxiosRequestConfig } from 'axios';
 * url after https://discord.com/api/v{version_number}, for example `/channels/{channel.id}`
 * @param body
 * JSON body, check https://discord.com/developers/docs
+* @internal
 */
 export default async function fetch(url: string, method: HttpRequestMethod, BOT_TOKEN: string, body?: object): Promise<string> {
   const fetchUrl = CLIENT_URL + BASE_URL + url;

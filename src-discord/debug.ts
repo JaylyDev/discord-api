@@ -1,4 +1,6 @@
+/** @internal */
 export class Debug {
+  /** @internal */
   private readonly category: string;
   private get date (): string {
     return DateParse(new Date());

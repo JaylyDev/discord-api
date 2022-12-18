@@ -1,16 +1,18 @@
 {
   "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
+    "allowSyntheticDefaultImports": false,
     "module": "CommonJS",
     "moduleResolution": "Node",
     "target": "ES5",
     "outDir": "dist",
     // Ensure that .d.ts files are created by tsc, but not .js files
     "declaration": true,
+    "declarationDir": "dist/typings",
     // Ensure that Babel can safely transpile files in the TypeScript project
     "isolatedModules": true,
-    "declarationDir": "dist/typings",
     "sourceMap": true,
-    "lib": ["DOM"]
+    "lib": ["DOM"],
+    "stripInternal": true,
+    "esModuleInterop": true
   }
 }

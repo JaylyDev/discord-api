@@ -1,6 +1,7 @@
 /**
  * Clone the object using iteration
  * @param obj object
+ * @internal
  */
 export function DeepCopy(obj: object): object {
   if (obj === null || obj === undefined || typeof obj !== "object") {

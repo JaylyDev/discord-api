@@ -5,7 +5,12 @@ import { CreateMessage } from '../src-discord/Resources/Channels';
 import type { Snowflake } from 'discord-api-types/globals';
 import { RESTGetAPIGuildQuery, RESTGetAPIGuildResult, RESTPostAPIChannelMessageJSONBody } from 'discord-api-types/v9';
 
+/**
+ * Represents a client connection that connects to Discord.
+ * This class is used to authenticate and interact with the Discord API.
+ */
 export class Client {
+  /** @internal */
   private readonly token: string;
 
   /**
@@ -14,7 +19,7 @@ export class Client {
    * @param options get guild options
    * @returns Guild object
    */
-   public async getGuild(guildId: Snowflake, options?: RESTGetAPIGuildQuery) {
+  public async getGuild(guildId: Snowflake, options?: RESTGetAPIGuildQuery) {
     const rawResponse: string = await GetGuild(guildId, options, this.token, fetch);
     const guildResponse: RESTGetAPIGuildResult = JSON.parse(rawResponse);
     return new Guild(guildResponse, this);

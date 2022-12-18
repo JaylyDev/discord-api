@@ -1,9 +1,9 @@
 {
-  "name": "discordmc",
-  "version": "0.0.2",
+  "name": "discord-api",
+  "version": "0.0.3",
   "description": "Discord API for Minecraft Scripting",
   "scripts": {
-    "test": "tsc",
+    "test": "npx webpack --env platform=node entry=./tests/index.ts",
     "build-mc": "npx webpack --env platform=server-net",
     "build-node": "npx webpack --env platform=node"
   },
@@ -28,14 +28,18 @@
   "author": "Jayly",
   "license": "Apache-2.0",
   "dependencies": {
-    "@minecraft/server-admin": "^1.0.0-beta.11940b24",
-    "@minecraft/server-net": "^1.0.0-beta.11940b24",
+    "@minecraft/server": "^1.1.0-beta.1.19.60-preview.24",
+    "@minecraft/server-admin": "^1.0.0-beta.1.19.60-preview.24",
+    "@minecraft/server-net": "^1.0.0-beta.1.19.60-preview.24",
     "axios": "^1.2.1",
     "big-integer": "^1.6.51",
     "discord-api-types": "^0.37.20",
-    "querystring": "^0.2.1"
+    "querystring": "^0.2.1",
+    "semver": "^7.3.8"
   },
   "devDependencies": {
+    "@npm/types": "^1.0.2",
+    "@types/semver": "^7.3.13",
     "source-map": "^0.7.4",
     "terser-webpack-plugin": "^5.3.6",
     "ts-loader": "^9.4.1",

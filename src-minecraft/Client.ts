@@ -4,7 +4,12 @@ import { Guild } from './Guild';
 import fetch from './net-request';
 import { CreateMessage } from '../src-discord/Resources/Channels';
 
+/**
+ * Represents a client connection that connects to Discord.
+ * This class is used to authenticate and interact with the Discord API.
+ */
 export class Client {
+  /** @internal */
   private readonly token: string;
 
   /**

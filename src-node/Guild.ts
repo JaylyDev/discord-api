@@ -1,179 +1,183 @@
-import { GetChannel, GetGuildAuditLog } from '../src-discord/Resources/Guilds';
+import { GetChannel, GetGuildAuditLog, getGuildMember } from '../src-discord/Resources/Guilds';
 import { Client } from './Client';
 import fetch from './net-request';
-import type { RESTGetAPIAuditLogQuery, RESTGetAPIAuditLogResult, RESTGetAPIChannelMessagesQuery, RESTGetAPIChannelMessagesResult, RESTGetAPIChannelResult, RESTGetAPIGuildResult, RESTPostAPIChannelMessageJSONBody, Snowflake } from 'discord-api-types/v9';
+import type { GuildVerificationLevel, GuildDefaultMessageNotifications, GuildExplicitContentFilter, APIRole, APIEmoji, GuildFeature, GuildMFALevel, GuildSystemChannelFlags, GuildPremiumTier, APIGuildWelcomeScreen, GuildNSFWLevel, APISticker, GuildHubType, RESTGetAPIAuditLogQuery, RESTGetAPIAuditLogResult, RESTGetAPIChannelMessagesQuery, RESTGetAPIChannelMessagesResult, RESTGetAPIChannelResult, RESTGetAPIGuildResult, RESTPostAPIChannelMessageJSONBody, Snowflake, APIGuild, RESTGetAPIGuildMemberResult } from 'discord-api-types/v9';
 import { CreateMessage, GetChannelMessages } from '../src-discord/Resources/Channels';
+import { GuildMember, User } from './User';
 
+/**
+ * Guilds in Discord represent an isolated collection of users and channels,
+ * and are often referred to as "servers" in the UI.
+ */
 export class Guild {
+  /** @internal */
   private readonly client: Client;
-  private readonly response: RESTGetAPIGuildResult;
-
   /**
    * Guild id
    */
-  public get id() { return this.response.id; };
+  public readonly id: string;
   /**
    * Guild name
    */
-  public get name() { return this.response.name; };
+  public readonly name: string;
   /**
    * Guild icon
    */
-  public get icon() { return this.response.icon; };
+  public readonly icon: string;
   /**
    * Icon hash, returned when in the template object
    */
-  public get iconHash() { return this.response.icon_hash; };
+  public readonly iconHash: string;
   /**
    * Guild splash
    */
-  public get splash() { return this.response.splash; };
+  public readonly splash: string;
   /**
    * Discovery splash hash; only present for guilds with the "DISCOVERABLE" feature
    */
-  public get discoverySplash() { return this.response.discovery_splash; };
+  public readonly discoverySplash: string;
   /**
    * `true` if the user is the owner of the guild
    */
-  public get owner() { return this.response.owner; };
+  public readonly owner: boolean;
   /**
    * ID of owner
    */
-  public get ownerId() { return this.response.owner_id; };
+  public readonly ownerId: string;
   /**
    * Total permissions for the user in the guild (excludes overrides)
    *
    * See https://en.wikipedia.org/wiki/Bit_field
    */
-  public get permissions() { return this.response.permissions; };
+  public readonly permissions: string;
   /**
    * ID of afk channel
    */
-  public get afkChannelId() { return this.response.afk_channel_id; };
+  public readonly afkChannelId: string;
   /**
    * afk timeout in seconds, can be set to: `60`, `300`, `900`, `1800`, `3600`
    */
-  public get afkTimeout() { return this.response.afk_timeout; };
+  public readonly afkTimeout: number;
   /**
    * `true` if the guild widget is enabled
    */
-  public get widgetEnabled() { return this.response.widget_enabled; };
+  public readonly widgetEnabled: boolean;
   /**
    * The channel id that the widget will generate an invite to, or `null` if set to no invite
    */
-  public get widgetChannelId() { return this.response.widget_channel_id; };
+  public readonly widgetChannelId: string;
   /**
   * Verification level required for the guild
    */
-  public get verificationLevel() { return this.response.verification_level; };
+  public readonly verificationLevel: GuildVerificationLevel;
   /**
    * Default message notifications level
    */
-  public get defaultMessageNotifications() { return this.response.default_message_notifications; };
+  public readonly defaultMessageNotifications: GuildDefaultMessageNotifications;
   /**
    * Explicit content filter level
    */
-  public get explicitContentFilter() { return this.response.explicit_content_filter; };
+  public readonly explicitContentFilter: GuildExplicitContentFilter;
   /**
    * Roles in the guild
    */
-  public get roles() { return this.response.roles; };
+  public readonly roles: APIRole[];
   /**
    * Custom guild emojis
    */
-  public get emojis() { return this.response.emojis; };
+  public readonly emojis: APIEmoji[];
   /**
    * Enabled guild features
    */
-  public get features() { return this.response.features; };
+  public readonly features: GuildFeature[];
   /**
    * Required MFA level for the guild
    */
-  public get mfaLevel() { return this.response.mfa_level; };
+  public readonly mfaLevel: GuildMFALevel;
   /**
    * Application id of the guild creator if it is bot-created
    */
-  public get applicationId() { return this.response.application_id; };
+  public readonly applicationId: string;
   /**
    * The id of the channel where guild notices such as welcome messages and boost events are posted
    */
-  public get systemChannelId() { return this.response.system_channel_id; };
+  public readonly systemChannelId: string;
   /**
    * System channel flags
    */
-  public get systemChannelFlags() { return this.response.system_channel_flags; };
+  public readonly systemChannelFlags: GuildSystemChannelFlags;
   /**
    * The id of the channel where Community guilds can display rules and/or guidelines
    */
-  public get rulesChannelId() { return this.response.rules_channel_id; };
+  public readonly rulesChannelId: string;
   /**
    * The maximum number of presences for the guild (`null` is always returned, apart from the largest of guilds)
    */
-  public get maxPresences() { return this.response.max_presences; };
+  public readonly maxPresences: number;
   /**
    * The maximum number of members for the guild
    */
-  public get maxMembers() { return this.response.max_members; };
+  public readonly maxMembers: number;
   /**
    * The vanity url code for the guild
    */
-  public get vanityUrlCode() { return this.response.vanity_url_code; };
+  public readonly vanityUrlCode: string;
   /**
    * The description for the guild
    */
-  public get description() { return this.response.description; };
+  public readonly description: string;
   /**
    * Banner hash
    */
-  public get banner() { return this.response.banner; };
+  public readonly banner: string;
   /**
    * Premium tier (Server Boost level)
    */
-  public get premiumTier() { return this.response.premium_tier; };
+  public readonly premiumTier: GuildPremiumTier;
   /**
    * The number of boosts this guild currently has
    */
-  public get premiumSubscriptionCount() { return this.response.premium_subscription_count; };
+  public readonly premiumSubscriptionCount: number;
   /**
    * The preferred locale of a Community guild; used in guild discovery and notices from Discord; defaults to "en-US"
-  *
-  public get preferredLocale () { return this.response.preferred_locale; };
+   */
+  public readonly preferredLocale: string;
   /**
    * The id of the channel where admins and moderators of Community guilds receive notices from Discord
    */
-  public get publicUpdatesChannelId() { return this.response.public_updates_channel_id; };
+  public readonly publicUpdatesChannelId: string;
   /**
    * The maximum amount of users in a video channel
    */
-  public get maxVideoChannelUsers() { return this.response.max_video_channel_users; };
+  public readonly maxVideoChannelUsers: number;
   /**
    * **This field is only received from https://discord.com/developers/docs/resources/guild#get-guild with the `with_counts` query parameter set to `true`**
    */
-  public get approximateMemberCount() { return this.response.approximate_member_count; };
+  public readonly approximateMemberCount: number;
   /**
    * **This field is only received from https://discord.com/developers/docs/resources/guild#get-guild with the `with_counts` query parameter set to `true`**
    */
-  public get approximatePresenceCount() { return this.response.approximate_presence_count; };
+  public readonly approximatePresenceCount: number;
   /**
    * The welcome screen of a Community guild, shown to new members
-  *
-  public get welcomeScreen () { return this.response.welcome_screen; };
+   */
+  public readonly welcomeScreen: APIGuildWelcomeScreen;
   /**
    * The nsfw level of the guild
    */
-  public get nsfwLevel() { return this.response.nsfw_level; };
+  public readonly nsfwLevel: GuildNSFWLevel;
   /**
    * Custom guild stickers
    */
-  public get stickers() { return this.response.stickers; };
+  public readonly stickers: APISticker[];
   /**
    * Whether the guild has the boost progress bar enabled.
    */
-  public get premiumProgressBarEnabled() { return this.response.premium_progress_bar_enabled; };
+  public readonly premiumProgressBarEnabled: boolean;
   /**
    * The type of Student Hub the guild is
    */
-  public get hubType() { return this.response.hub_type; };
+  public readonly hubType: GuildHubType;
 
   /**
    * Get server audit log
@@ -207,6 +211,12 @@ export class Guild {
     return result;
   };
 
+  public async getGuildMember (userId: Snowflake) {
+    const response: string = await getGuildMember(this.id, userId, this.client['token'], fetch);
+    const result: RESTGetAPIGuildMemberResult = JSON.parse(response);
+    return new GuildMember(result, this.client);
+  };
+
   /**
    * Get channel from current guild
    * @param channelId 
@@ -218,8 +228,49 @@ export class Guild {
     return result;
   };
 
+  /** @internal */
   constructor(response: RESTGetAPIGuildResult, client: Client) {
     this.client = client;
-    this.response = response;
+    this.id = response.id;
+    this.name = response.name;
+    this.icon = response.icon;
+    this.iconHash = response.icon_hash;
+    this.splash = response.splash;
+    this.discoverySplash = response.discovery_splash;
+    this.owner = response.owner;
+    this.ownerId = response.owner_id;
+    this.permissions = response.permissions;
+    this.afkChannelId = response.afk_channel_id;
+    this.afkTimeout = response.afk_timeout;
+    this.widgetEnabled = response.widget_enabled;
+    this.widgetChannelId = response.widget_channel_id;
+    this.verificationLevel = response.verification_level;
+    this.defaultMessageNotifications = response.default_message_notifications;
+    this.explicitContentFilter = response.explicit_content_filter;
+    this.roles = response.roles;
+    this.emojis = response.emojis;
+    this.features = response.features;
+    this.mfaLevel = response.mfa_level;
+    this.applicationId = response.application_id;
+    this.systemChannelId = response.system_channel_id;
+    this.systemChannelFlags = response.system_channel_flags;
+    this.rulesChannelId = response.rules_channel_id;
+    this.maxPresences = response.max_presences;
+    this.maxMembers = response.max_members;
+    this.vanityUrlCode = response.vanity_url_code;
+    this.description = response.description;
+    this.banner = response.banner;
+    this.premiumTier = response.premium_tier;
+    this.premiumSubscriptionCount = response.premium_subscription_count;
+    this.preferredLocale = response.preferred_locale;
+    this.publicUpdatesChannelId = response.public_updates_channel_id;
+    this.maxVideoChannelUsers = response.max_video_channel_users;
+    this.approximateMemberCount = response.approximate_member_count;
+    this.approximatePresenceCount = response.approximate_presence_count;
+    this.welcomeScreen = response.welcome_screen;
+    this.nsfwLevel = response.nsfw_level;
+    this.stickers = response.stickers;
+    this.premiumProgressBarEnabled = response.premium_progress_bar_enabled;
+    this.hubType = response.hub_type;
   };
 };

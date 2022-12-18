@@ -1,5 +1,5 @@
 import type { Snowflake } from "discord-api-types/globals";
-import BigInt from 'big-integer';
+import BigInt = require('big-integer');
 
 const DISCORD_EPOCH = 1420070400000;
 
@@ -9,6 +9,7 @@ const DISCORD_EPOCH = 1420070400000;
  * @example
  * const date = SnowflakeToDate('175928847299117063');
  * console.warn(date.toUTCString()); // Sat, 30 Apr 2016 11:18:25 GMT
+ * @internal
  */
 export function SnowflakeToDate(snowflake: Snowflake): Date {
   const SnowflakeBigInt = BigInt(snowflake);

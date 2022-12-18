@@ -1,4 +1,4 @@
-import { Client } from '../src-minecraft';
+import { Client } from '../src-node';
 
 const client = new Client('OTY5OTI3Mjg5NzY2ODE3ODMy.Ym0hLg.UGeOrNbzyF1YIwBA5L9NOFMUjGk');
 
