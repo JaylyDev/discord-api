@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "allowSyntheticDefaultImports": false,
+    "allowSyntheticDefaultImports": true,
     "module": "CommonJS",
     "moduleResolution": "Node",
     "target": "ES5",
@@ -13,6 +13,7 @@
     "sourceMap": true,
     "lib": ["DOM"],
     "stripInternal": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "composite": true
   }
 }

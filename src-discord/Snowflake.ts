@@ -1,5 +1,5 @@
 import type { Snowflake } from "discord-api-types/globals";
-import BigInt = require('big-integer');
+import BigInt from "big-integer";
 
 const DISCORD_EPOCH = 1420070400000;
 

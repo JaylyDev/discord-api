@@ -1,6 +1,8 @@
 import { Debug } from "./debug";
 
-/** @internal */
+/**
+ * Discord API version used for the wrapper
+ */
 export const API_VERSION = 9;
 /** @internal */
 export const BASE_URL = "/api/v" + API_VERSION;
@@ -30,7 +32,6 @@ export const NodeDebug = new Debug('node');
 /** @internal */
 export type InternalCallback = (url: string, method: HttpRequestMethod, BOT_TOKEN: string, body?: object) => Promise<string>;
 
-/** @internal */
 export enum HttpRequestMethod {
   /**
    * The GET method requests a representation of the specified resource. Requests using GET should only retrieve data.
