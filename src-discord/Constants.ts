@@ -13,7 +13,7 @@ export const CLIENT_URL = "https://discord.com";
 /**
  * NPM Package version
  */
-export const version = '1.0.4';
+export const version = '1.0.5';
 /**
  * discord-api submodule version
  */
