@@ -1,4 +1,4 @@
-import type { APIUser, Snowflake, UserFlags, UserPremiumType, } from "discord-api-types/v9";
+import type { APIGuildMember, APIUser, Snowflake, UserFlags, UserPremiumType, } from "discord-api-types/v9";
 import { SnowflakeToDate } from "../src-discord";
 import { Client } from "./Client";
 
@@ -79,7 +79,7 @@ export class User {
    */
   public readonly publicFlags?: UserFlags;
   /**
-   * Get the date of time of becoming a discord member
+   * When the user joined Discord
    * @returns user join dates and times in a Date object
    */
   public getJoinDate (): Date {
@@ -107,3 +107,78 @@ export class User {
     this.client = client;
   };
 }
+
+export class GuildMember {
+  /** @internal */
+  private readonly client: Client;
+  /**
+   * The user this guild member represents
+   *
+   * **This field won't be included in the member object attached to `MESSAGE_CREATE` and `MESSAGE_UPDATE` gateway events.**
+   *
+   * See https://discord.com/developers/docs/resources/user#user-object
+   */
+  public readonly user?: User;
+  /**
+   * This users guild nickname
+   */
+  public readonly nick?: string | null;
+  /**
+   * The member's guild avatar hash
+   */
+  public readonly avatar?: string | null;
+  /**
+   * Array of role object ids
+   *
+   * See https://discord.com/developers/docs/topics/permissions#role-object
+   */
+  public readonly roles: Snowflake[];
+  /**
+   * When the user joined the guild
+   */
+  public readonly joinedAt: string;
+  /**
+   * When the user started boosting the guild
+   *
+   * See https://support.discord.com/hc/articles/360028038352
+   */
+  public readonly premiumSince?: string | null;
+  /**
+   * Whether the user is deafened in voice channels
+   */
+  public readonly deaf: boolean;
+  /**
+   * Whether the user is muted in voice channels
+   */
+  public readonly mute: boolean;
+  /**
+   * Whether the user has not yet passed the guild's Membership Screening requirements
+   *
+   * *If this field is not present, it can be assumed as `false`.*
+   */
+  public readonly pending?: boolean;
+  /**
+   * Timestamp of when the time out will be removed; until then, they cannot interact with the guild
+   */
+  public readonly communicationDisabledUntil?: string | null;
+  /**
+   * When the user joined Discord
+   * @returns user join dates and times in a Date object
+   */
+  public getJoinDate (): Date {
+    return SnowflakeToDate(this.user.id);
+  };
+  constructor (response: APIGuildMember, client: Client) {
+    this.user = new User(response.user, client);
+    this.nick = response.nick;
+    this.avatar = response.avatar;
+    this.roles = response.roles;
+    this.joinedAt = response.joined_at;
+    this.premiumSince = response.premium_since;
+    this.deaf = response.deaf;
+    this.mute = response.mute;
+    this.pending = response.pending;
+    this.communicationDisabledUntil = response.communication_disabled_until;
+    this.client = client;
+  };
+};

@@ -8,4 +8,4 @@ getUpdate();
 export { Client } from './Client';
 export { Guild } from './Guild';
 export { HttpRequestMethod, API_VERSION } from '../src-discord';
-export { User } from './User';
+export { User, GuildMember } from './User';

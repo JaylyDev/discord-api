@@ -1,8 +1,9 @@
-import { GetChannel, GetGuildAuditLog } from '../src-discord/Resources/Guilds';
+import { GetChannel, GetGuildAuditLog, getGuildMember } from '../src-discord/Resources/Guilds';
 import { Client } from './Client';
 import fetch from './net-request';
-import type { GuildVerificationLevel, GuildDefaultMessageNotifications, GuildExplicitContentFilter, APIRole, APIEmoji, GuildFeature, GuildMFALevel, GuildSystemChannelFlags, GuildPremiumTier, APIGuildWelcomeScreen, GuildNSFWLevel, APISticker, GuildHubType, RESTGetAPIAuditLogQuery, RESTGetAPIAuditLogResult, RESTGetAPIChannelMessagesQuery, RESTGetAPIChannelMessagesResult, RESTGetAPIChannelResult, RESTGetAPIGuildResult, RESTPostAPIChannelMessageJSONBody, Snowflake, APIGuild } from 'discord-api-types/v9';
+import type { GuildVerificationLevel, GuildDefaultMessageNotifications, GuildExplicitContentFilter, APIRole, APIEmoji, GuildFeature, GuildMFALevel, GuildSystemChannelFlags, GuildPremiumTier, APIGuildWelcomeScreen, GuildNSFWLevel, APISticker, GuildHubType, RESTGetAPIAuditLogQuery, RESTGetAPIAuditLogResult, RESTGetAPIChannelMessagesQuery, RESTGetAPIChannelMessagesResult, RESTGetAPIChannelResult, RESTGetAPIGuildResult, RESTPostAPIChannelMessageJSONBody, Snowflake, APIGuild, RESTGetAPIGuildMemberResult } from 'discord-api-types/v9';
 import { CreateMessage, GetChannelMessages } from '../src-discord/Resources/Channels';
+import { GuildMember } from './User';
 
 /**
  * Guilds in Discord represent an isolated collection of users and channels,
@@ -219,6 +220,12 @@ export class Guild {
     const response: string = await GetChannel(channelId, this.client['token'], fetch);
     const result = JSON.parse(response) as RESTGetAPIChannelResult;
     return result;
+  };
+
+  public async getGuildMember (userId: Snowflake) {
+    const response: string = await getGuildMember(this.id, userId, this.client['token'], fetch);
+    const result: RESTGetAPIGuildMemberResult = JSON.parse(response);
+    return new GuildMember(result, this.client);
   };
 
   /** @internal */

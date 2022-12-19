@@ -12,3 +12,4 @@ This wrapper currently supports multiple platforms. This includes Minecraft Bedr
 
 - [`Client`](./Client.md) Class
 - [`Guild`](./Guild.md) Class
+- [`User`](./User.md) Class
