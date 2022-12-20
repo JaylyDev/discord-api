@@ -6,15 +6,13 @@
     "target": "ES5",
     "outDir": "dist",
     // Ensure that .d.ts files are created by tsc, but not .js files
-    "declaration": true,
-    "declarationDir": "typings",
+    "composite": true,
     // Ensure that Babel can safely transpile files in the TypeScript project
     "isolatedModules": true,
     "sourceMap": true,
     "lib": ["DOM"],
     "stripInternal": true,
     "esModuleInterop": true,
-    "composite": true,
     "paths": {
       "minecraft-extra/discord": [ "./src-minecraft" ]
     }
