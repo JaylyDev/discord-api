@@ -18,7 +18,7 @@ export class Client {
    * @param options get guild options
    * @returns Guild object
    */
-   public async getGuild(guildId: Snowflake, options?: RESTGetAPIGuildQuery) {
+  public async getGuild(guildId: Snowflake, options?: RESTGetAPIGuildQuery) {
     const rawResponse: string = await GetGuild(guildId, options, this.token, fetch);
     const guildResponse: RESTGetAPIGuildResult = JSON.parse(rawResponse);
     return new Guild(guildResponse, this);
