@@ -4,7 +4,7 @@ import fetch from './net-request';
 import { Guild } from "./Guild";
 import type { APIActionRowComponent, APIAllowedMentions, APIApplication, APIAttachment, APIChannel, APIChannelMention, APIEmbed, APIMessage, APIMessageActionRowComponent, APIMessageActivity, APIMessageInteraction, APIMessageReference, APIReaction, APIStickerItem, APIThreadChannel, APIUser, MessageFlags, MessageType, RESTPostAPIChannelMessageJSONBody, Snowflake } from "discord-api-types/v9";
 import { User } from "./User";
-import { ThreadChannel } from "../src-discord/Channels";
+import { ThreadChannel } from "./factory/Channels";
 
 export interface PostChannelMessageBody {
   /**

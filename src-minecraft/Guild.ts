@@ -4,7 +4,7 @@ import fetch from './net-request';
 import { GuildVerificationLevel, GuildDefaultMessageNotifications, GuildExplicitContentFilter, APIRole, APIEmoji, GuildFeature, GuildMFALevel, GuildSystemChannelFlags, GuildPremiumTier, APIGuildWelcomeScreen, GuildNSFWLevel, APISticker, GuildHubType, RESTGetAPIAuditLogQuery, RESTGetAPIAuditLogResult, RESTGetAPIChannelMessagesQuery, RESTGetAPIChannelMessagesResult, RESTGetAPIChannelResult, RESTGetAPIGuildResult, RESTPostAPIChannelMessageJSONBody, Snowflake, APIGuild, RESTGetAPIGuildMemberResult, ChannelType } from 'discord-api-types/v9';
 import { CreateMessage, GetChannelMessages } from '../src-discord/Resources/Channels';
 import { GuildMember } from './User';
-import { DMChannel, GroupDMChannel, GuildCategoryChannel, GuildForumChannel, GuildStageVoiceChannel, GuildTextChannel, GuildVoiceChannel, NewsChannel, ThreadChannel } from '../src-discord/Channels';
+import { DMChannel, GroupDMChannel, GuildCategoryChannel, GuildForumChannel, GuildStageVoiceChannel, GuildTextChannel, GuildVoiceChannel, NewsChannel, ThreadChannel } from './factory/Channels';
 import { ServerNetDebug } from '../src-discord/Constants';
 
 /**

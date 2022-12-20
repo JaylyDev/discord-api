@@ -30,7 +30,7 @@ import {
     APIDMChannel,
     APIGroupDMChannel,
 } from "discord-api-types/v9";
-import { Guild } from "minecraft-extra/discord";
+import { Guild } from "../Guild";
 
 //////////////////
 // DM Channel API
