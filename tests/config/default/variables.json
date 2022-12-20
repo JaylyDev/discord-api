@@ -1,0 +1,8 @@
+// This file is located in BDS
+// All values must not leave blank
+{
+  "BOT_TOKEN": "",
+  "TEST_GUILD": "570758760373420033", // Jayly's Discord id
+  "TEST_USER": "439009249243430915", // Jayly id,
+  "TEST_CHANNEL": "571487722934370314" // #general
+}

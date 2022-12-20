@@ -1,4 +1,4 @@
-import { Package, UserAgent, BASE_URL, CLIENT_URL, ServerNetDebug } from '../src-discord/Constants';
+import { Package, UserAgent, BASE_URL, CLIENT_URL, ServerNetDebug, packageName, npmDebug } from '../src-discord/Constants';
 import { HttpRequestMethod } from '../src-discord/Constants';
 import { http, HttpHeader, HttpRequest } from '@minecraft/server-net';
 import { DeepCopy } from './deep-copy';

@@ -85,6 +85,10 @@ export class User {
   public getJoinDate (): Date {
     return SnowflakeToDate(this.id);
   };
+  /**
+   * Discord user tag
+   */
+  public readonly tag: string;
 
   /** @internal */
   constructor (response: APIUser, client: Client) {
@@ -105,6 +109,7 @@ export class User {
     this.publicFlags = response.public_flags;
 
     this.client = client;
+    this.tag = `${this.username}#${this.discriminator}`;
   };
 }
 
@@ -168,6 +173,7 @@ export class GuildMember {
   public getJoinDate (): Date {
     return SnowflakeToDate(this.user.id);
   };
+  /** @internal */
   constructor (response: APIGuildMember, client: Client) {
     this.user = new User(response.user, client);
     this.nick = response.nick;
@@ -179,6 +185,7 @@ export class GuildMember {
     this.mute = response.mute;
     this.pending = response.pending;
     this.communicationDisabledUntil = response.communication_disabled_until;
+
     this.client = client;
   };
 };

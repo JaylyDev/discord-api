@@ -7,15 +7,15 @@ export class Debug {
   };
 
   log (...arg: any) {  
-    console.log(`[${this.date} INFO] ${this.category}`, ...arg);
+    console.log(`[${this.date}][${this.category}]`, ...arg);
   };
 
   warn (...arg: any) {  
-    console.warn(`[${this.date} WARN] ${this.category}`, ...arg);
+    console.warn(`[${this.date}][${this.category}]`, ...arg);
   };
 
   error (...arg: any) {  
-    console.error(`[${this.date} ERROR] ${this.category}`, ...arg);
+    console.error(`[${this.date}][${this.category}]`, ...arg);
   };
   
   constructor (category: string) {

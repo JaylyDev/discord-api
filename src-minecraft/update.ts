@@ -1,21 +1,15 @@
-import { ServerNetDebug, version } from "../src-discord/Constants";
+import { Package, ServerNetDebug, version, npmDebug, packageName } from "../src-discord/Constants";
 import { http, HttpRequestMethod } from "@minecraft/server-net";
 import type * as npm from '@npm/types';
 import { DeepCopy } from "./deep-copy";
 import * as semver from 'semver';
-import { Debug } from "../src-discord/debug";
-import { world } from '@minecraft/server';
-
-const module_name = 'minecraft-extra';
-const registry = 'https://registry.npmjs.org/';
-const npmDebug = new Debug('npm');
 
 /**
  * Check if update available for the package 
  * @internal
  */
 export async function getUpdate () {
-  const url = registry + module_name;
+  const url = Package.homepage;
   const response = await http.get(url);
 
   if (response.status !== 200) {
@@ -34,7 +28,31 @@ export async function getUpdate () {
   if (result === -1) {
     const message = 'New update available. Please update the package to version ' + LatestVersion;
     npmDebug.warn(message);
+    
+    // attempt to import @minecraft/server module
+    const { world } = await import('@minecraft/server');
     world.say(message);
   }
   else npmDebug.log(`Current version ${version} >= latest version ${LatestVersion}`);
 };
+
+/**
+ * get package download speed
+ */
+async function testOnly_packageDownload () {
+  const startTime = Date.now();
+  const response = await http.get(`https://registry.npmjs.org/${packageName}/-/${packageName}-${Package.version}.tgz`);
+  const timeTaken = Date.now() - startTime;
+
+  const ContentLength = response.headers.find(({key}) => key === 'content-length');
+  return parseInt(String(ContentLength.value ?? 0)) / (timeTaken / 1000);
+};
+
+getUpdate();
+// (async () => {
+//   const DownloadSpeed = await testOnly_packageDownload();
+//   const kbps = (DownloadSpeed / 1000).toFixed(3);
+
+//   if (DownloadSpeed < 100000) ServerNetDebug.warn(`Slow internet connectivity detected. (${kbps} kbps)`);
+//   else ServerNetDebug.log('Good internet connectivity, should be able to interact with Discord API.');
+// })();

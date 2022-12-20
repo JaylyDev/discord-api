@@ -1,14 +1,23 @@
+/**
+ * @internal
+ */
 import { Debug } from "./debug";
 
 /**
  * Discord API version used for the wrapper
  */
 export const API_VERSION = 9;
-/** @internal */
+/**
+ * @internal
+ */
 export const BASE_URL = "/api/v" + API_VERSION;
-/** @internal */
+/**
+ * @internal
+ */
 export const CDN_URL = "https://cdn.discordapp.com";
-/** @internal */
+/**
+ * @internal
+ */
 export const CLIENT_URL = "https://discord.com";
 /**
  * NPM Package version
@@ -17,19 +26,34 @@ export const version = '1.0.5';
 /**
  * discord-api submodule version
  */
-export const versionInternal = '0.0.3';
-
-/** @internal */
-export const Package = { homepage: "https://www.npmjs.com/package/minecraft-extra", version, };
-/** @internal */
+export const moduleVersion = '0.0.5';
+/**
+ * @internal
+ */
+export const packageName = 'minecraft-extra';
+/**
+ * @internal
+ */
+export const Package = { homepage: "https://www.npmjs.com/package/" + packageName, version, };
+/**
+ * @internal
+ */
 export const UserAgent = { ag: 'cpprestsdk', version: '2.9.0' };
-
-/** @internal */
+/**
+ * @internal
+ */
 export const ServerNetDebug = new Debug('server-net');
-/** @internal */
+/**
+ * @internal
+ */
 export const NodeDebug = new Debug('node');
-
-/** @internal */
+/**
+ * @internal
+ */
+export const npmDebug = new Debug('npm');
+/**
+ * @internal
+ */
 export type InternalCallback = (url: string, method: HttpRequestMethod, BOT_TOKEN: string, body?: object) => Promise<string>;
 
 export enum HttpRequestMethod {

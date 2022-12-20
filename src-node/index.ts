@@ -1,8 +1,5 @@
 // imports
-import { getUpdate } from './update';
-
-// runtime
-getUpdate();
+import './update';
 
 // exports
 export { Client } from './Client';
