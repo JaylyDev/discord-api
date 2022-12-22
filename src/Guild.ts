@@ -1,9 +1,11 @@
-import { GetChannel, GetGuildAuditLog, getGuildMember } from '../src-discord/Resources/Guilds';
+import { GetChannel, GetGuildAuditLog, getGuildMember } from './factory/Requests/Guilds';
 import { Client } from './Client';
 import fetch from './net-request';
-import type { GuildVerificationLevel, GuildDefaultMessageNotifications, GuildExplicitContentFilter, APIRole, APIEmoji, GuildFeature, GuildMFALevel, GuildSystemChannelFlags, GuildPremiumTier, APIGuildWelcomeScreen, GuildNSFWLevel, APISticker, GuildHubType, RESTGetAPIAuditLogQuery, RESTGetAPIAuditLogResult, RESTGetAPIChannelMessagesQuery, RESTGetAPIChannelMessagesResult, RESTGetAPIChannelResult, RESTGetAPIGuildResult, RESTPostAPIChannelMessageJSONBody, Snowflake, APIGuild, RESTGetAPIGuildMemberResult } from 'discord-api-types/v9';
-import { CreateMessage, GetChannelMessages } from '../src-discord/Resources/Channels';
-import { GuildMember, User } from './User';
+import { GuildVerificationLevel, GuildDefaultMessageNotifications, GuildExplicitContentFilter, APIRole, APIEmoji, GuildFeature, GuildMFALevel, GuildSystemChannelFlags, GuildPremiumTier, APIGuildWelcomeScreen, GuildNSFWLevel, APISticker, GuildHubType, RESTGetAPIAuditLogQuery, RESTGetAPIAuditLogResult, RESTGetAPIChannelMessagesQuery, RESTGetAPIChannelMessagesResult, RESTGetAPIChannelResult, RESTGetAPIGuildResult, RESTPostAPIChannelMessageJSONBody, Snowflake, APIGuild, RESTGetAPIGuildMemberResult, ChannelType } from 'discord-api-types/v9';
+import { CreateMessage, GetChannelMessages } from './factory/Requests/Channels';
+import { GuildMember } from './User';
+import { DMChannel, GroupDMChannel, GuildCategoryChannel, GuildForumChannel, GuildStageVoiceChannel, GuildTextChannel, GuildVoiceChannel, NewsChannel, ThreadChannel } from './factory/Channels';
+import { ServerNetDebug } from './factory/Constants';
 
 /**
  * Guilds in Discord represent an isolated collection of users and channels,
@@ -211,21 +213,45 @@ export class Guild {
     return result;
   };
 
-  public async getGuildMember (userId: Snowflake) {
-    const response: string = await getGuildMember(this.id, userId, this.client['token'], fetch);
-    const result: RESTGetAPIGuildMemberResult = JSON.parse(response);
-    return new GuildMember(result, this.client);
-  };
-
   /**
    * Get channel from current guild
    * @param channelId 
-   * @returns 
+   * @returns A wrapped channel class if channel exist
    */
   async getChannel(channelId: Snowflake) {
     const response: string = await GetChannel(channelId, this.client['token'], fetch);
     const result = JSON.parse(response) as RESTGetAPIChannelResult;
-    return result;
+
+    switch (result.type) {
+      case ChannelType.GuildText:
+        return new GuildTextChannel(result);
+      case ChannelType.DM:
+        return new DMChannel(result);
+      case ChannelType.GuildVoice:
+        return new GuildVoiceChannel(result);
+      case ChannelType.GroupDM:
+        return new GroupDMChannel(result);
+      case ChannelType.GuildCategory:
+        return new GuildCategoryChannel(result);
+      case ChannelType.GuildAnnouncement:
+        return new NewsChannel(result);
+      case ChannelType.AnnouncementThread || ChannelType.PublicThread || ChannelType.PrivateThread:
+        return new ThreadChannel(result);
+      case ChannelType.GuildStageVoice:
+        return new GuildStageVoiceChannel(result);
+      case ChannelType.GuildForum:
+        return new GuildForumChannel(result);
+      
+      default:
+        ServerNetDebug.warn('Could not identify type of channel:', result.type);
+        return result;
+    }
+  };
+
+  public async getGuildMember (userId: Snowflake) {
+    const response: string = await getGuildMember(this.id, userId, this.client['token'], fetch);
+    const result: RESTGetAPIGuildMemberResult = JSON.parse(response);
+    return new GuildMember(result, this.client);
   };
 
   /** @internal */

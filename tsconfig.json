@@ -1,10 +1,11 @@
 {
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
-    "module": "CommonJS",
+    "module": "ES2020",
     "moduleResolution": "Node",
     "target": "ES5",
-    "outDir": "dist",
+    "rootDir": "src",
+    "outDir": "built/local/discord",
     // Ensure that .d.ts files are created by tsc, but not .js files
     "composite": true,
     // Ensure that Babel can safely transpile files in the TypeScript project
@@ -13,8 +14,6 @@
     "lib": ["DOM"],
     "stripInternal": true,
     "esModuleInterop": true,
-    "paths": {
-      "minecraft-extra/discord": [ "./src-minecraft" ]
-    }
-  }
+  },
+  "include": [ "src" ]
 }

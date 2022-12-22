@@ -1,4 +1,4 @@
-import { Package, ServerNetDebug, version, npmDebug, packageName } from "../src-discord/Constants";
+import { Package, ServerNetDebug, version, npmDebug, packageName } from "./factory/Constants";
 import { http, HttpRequestMethod } from "@minecraft/server-net";
 import type * as npm from '@npm/types';
 import { DeepCopy } from "./deep-copy";

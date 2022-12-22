@@ -1,5 +1,5 @@
 import { Client } from "./Client";
-import { CreateMessage } from '../src-discord/Resources/Channels';
+import { CreateMessage } from './factory/Requests/Channels';
 import fetch from './net-request';
 import { Guild } from "./Guild";
 import type { APIActionRowComponent, APIAllowedMentions, APIApplication, APIAttachment, APIChannel, APIChannelMention, APIEmbed, APIMessage, APIMessageActionRowComponent, APIMessageActivity, APIMessageInteraction, APIMessageReference, APIReaction, APIStickerItem, APIThreadChannel, APIUser, MessageFlags, MessageType, RESTPostAPIChannelMessageJSONBody, Snowflake } from "discord-api-types/v9";
@@ -264,6 +264,10 @@ export class Message {
    */
   readonly guild: Guild;
 
+  /**
+   * Reply message
+   * @param options message body
+   */
   reply (options: PostChannelMessageBody) {
     const nativeOptions: RESTPostAPIChannelMessageJSONBody = {
       ...options,

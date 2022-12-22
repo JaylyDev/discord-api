@@ -1,5 +1,5 @@
 import type { APIGuildMember, APIUser, Snowflake, UserFlags, UserPremiumType, } from "discord-api-types/v9";
-import { SnowflakeToDate } from "../src-discord";
+import { SnowflakeToDate } from "./factory";
 import { Client } from "./Client";
 
 /**
@@ -185,7 +185,6 @@ export class GuildMember {
     this.mute = response.mute;
     this.pending = response.pending;
     this.communicationDisabledUntil = response.communication_disabled_until;
-
     this.client = client;
   };
 };

@@ -3,7 +3,7 @@ import { client, TEST_CHANNEL, TEST_GUILD, TEST_USER } from "./config";
 (async function getGuildMemberInfo() {
   const guild = await client.getGuild(TEST_GUILD);
   const member = await guild.getGuildMember(TEST_USER);
-  const memberTag = `${member.user.username}#${member.user.discriminator}`;
+  const memberTag = `${member?.user?.username}#${member?.user?.discriminator}`;
 
   console.log(
     `Member ${memberTag} join date: ${member.getJoinDate().toDateString()}`
