@@ -3,7 +3,7 @@
     "allowSyntheticDefaultImports": true,
     "module": "ES2020",
     "moduleResolution": "Node",
-    "target": "ES5",
+    "target": "ES6",
     "rootDir": "src",
     "outDir": "built/local/discord",
     // Ensure that .d.ts files are created by tsc, but not .js files

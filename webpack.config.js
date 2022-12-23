@@ -44,7 +44,7 @@ const Configuration = {
         ]
     },
     output: {
-        filename: 'discord.js',
+        filename: 'index.js',
         path: path.resolve(__dirname, 'built', 'local'),
         library: {
             type: 'module'
