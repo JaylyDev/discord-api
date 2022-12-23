@@ -18,7 +18,7 @@ export const test = task({
 export const bundle = task({
     name: "bundle",
     run: async () => {
-        await execa("npx webpack", ["--config", "webpack.config.js"]);
+        await execa("webpack", ["--config", "webpack.config.js"]);
     },
 });
 
@@ -40,7 +40,7 @@ export const docs = task({
     name: "docs",
     dependencies: [dtsBundle],
     run: async () => {
-        await execa("npx typedoc");
+        await execa("typedoc");
     }
 });
 
