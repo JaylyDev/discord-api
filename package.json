@@ -4,8 +4,8 @@
   "description": "Discord API for Minecraft Scripting",
   "scripts": {
     "test": "tsc",
-    "build": "npx hereby",
-    "preinstall": "npm i -g typescript webpack typedoc"
+    "build": "hereby",
+    "preinstall": "npm i -g typescript webpack typedoc hereby"
   },
   "directories": {
     "lib": "src",
