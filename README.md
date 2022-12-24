@@ -24,13 +24,8 @@ npm i
 npm run build-mc
 ```
 
-Using this package in [Node.js](https://nodejs.org/) for testing purposes:
+## Documentation
 
-- **Node.js 16.16.0 or newer**
+For more information on using this wrapper check out the following:
 
-```sh-session
-git clone https://github.com/JaylyDev/discord-api.git
-cd discord-api
-npm i
-npm run build-node
-```
+- [API Documentation](https://jaylydev.github.io/discord-api/)
