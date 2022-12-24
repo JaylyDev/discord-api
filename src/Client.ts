@@ -1,8 +1,8 @@
 import type { RESTGetAPIGuildQuery, RESTGetAPIGuildResult, RESTPostAPIChannelMessageJSONBody, Snowflake } from 'discord-api-types/v9';
-import { GetGuild } from '../src-discord/Resources/Guilds';
+import { GetGuild } from './factory/Requests/Guilds';
 import { Guild } from './Guild';
 import fetch from './net-request';
-import { CreateMessage } from '../src-discord/Resources/Channels';
+import { CreateMessage } from './factory/Requests/Channels';
 
 /**
  * Represents a client connection that connects to Discord.
