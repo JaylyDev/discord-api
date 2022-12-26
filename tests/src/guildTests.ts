@@ -1,17 +1,16 @@
 import { client, TEST_CHANNEL, TEST_GUILD, TEST_USER } from "./config";
+import * as GameTest from "@minecraft/server-gametest";
 
-(async function getGuildMemberInfo() {
+GameTest.register("GuildTests", "get_messages", async (test) => {
   const guild = await client.getGuild(TEST_GUILD);
-  const member = await guild.getGuildMember(TEST_USER);
-  const memberTag = `${member?.user?.username}#${member?.user?.discriminator}`;
+  const messages = await guild.getMessages(TEST_CHANNEL, {});
 
-  console.log(
-    `Member ${memberTag} join date: ${member.getJoinDate().toDateString()}`
-  );
-  // Member Jayly#1397 join date: Thu Apr 26 2018
-})().catch(console.error);
+  test.assert(messages instanceof Array, "getMessages() doesn't return array.");
+}).maxTicks(100)
+  .tag(GameTest.Tags.suiteDefault)
+  .structureName('discord_gametest');
 
-(async function sendMessage() {
+GameTest.register("GuildTests", "send_message", async (test) => {
   const guild = await client.getGuild(TEST_GUILD);
   guild.sendMessage(TEST_CHANNEL, { content: "Hello World." });
   guild.sendMessage(TEST_CHANNEL, {
@@ -29,4 +28,5 @@ import { client, TEST_CHANNEL, TEST_GUILD, TEST_USER } from "./config";
       },
     ],
   });
-})().catch(console.error);
+  test.succeed();
+});

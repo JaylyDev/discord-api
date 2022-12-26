@@ -54,6 +54,8 @@ jobs:
           echo ${{ toJson(steps.setup-packs.outputs.DISCOVERED_MANIFESTS) }} | jq
 
       - uses: ScriptAPIOSS/bds-gametest-run-action@v1
+        ## creates a timeout or else BDS runs until exceeds the job execution time limit
+        timeout-minutes: 1
         with:
           BDS_PATH: ${{ steps.setup-bds.outputs.DOWNLOAD_PATH }}
           TIMEOUT_TICKS: 120000
