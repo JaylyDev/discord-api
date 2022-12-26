@@ -1,4 +1,4 @@
-import { client, TEST_CHANNEL, TEST_GUILD, TEST_USER } from "./config";
+import { client, TEST_CHANNEL, TEST_GUILD } from "./config";
 import * as GameTest from "@minecraft/server-gametest";
 
 GameTest.register("GuildTests", "get_messages", async (test) => {
