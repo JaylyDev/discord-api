@@ -1,4 +1,4 @@
 import './DebugTests';
 import './UserTests';
 import './ClientTests';
-import './_GuildTests';
+import './GuildTests';
