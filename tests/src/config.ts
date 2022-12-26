@@ -1,4 +1,4 @@
-import { Client } from 'minecraft-extra/discord';
+import { Client } from './discord-api';
 import { variables } from '@minecraft/server-admin';
 
 const BOT_TOKEN = variables.get('BOT_TOKEN');

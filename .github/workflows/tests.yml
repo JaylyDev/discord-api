@@ -1,0 +1,64 @@
+name: bds
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+jobs:
+  gametest:
+    strategy:
+      matrix:
+        bds-channel:
+          - "stable"
+          - "preview"
+
+    runs-on: ubuntu-latest
+    name: BDS GameTest ${{ matrix.bds-channel }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: ScriptAPIOSS/setup-bds-action@v1
+        id: setup-bds
+        with:
+          BDS_VERSION: latest
+          BDS_CHANNEL: ${{ matrix.bds-channel }}
+          EULA_ACCEPT: true
+          PP_ACCEPT: true
+
+      - name: Build behavior pack
+        run: |
+          touch .env
+          echo BOT_TOKEN=${{ secrets.BOT_TOKEN }} >> .env
+          echo TEST_GUILD=${{ secrets.TEST_GUILD }} >> .env
+          echo TEST_USER=${{ secrets.TEST_USER }} >> .env
+          echo TEST_CHANNEL=${{ secrets.TEST_CHANNEL }} >> .env
+          echo DOWNLOAD_PATH=${{ steps.setup-bds.outputs.DOWNLOAD_PATH }} >> .env
+          hereby build-test
+          
+      - uses: ScriptAPIOSS/setup-resource-packs@v1
+        id: setup-packs
+        with:
+          TARGET_SOURCE_PATHS: |
+            ./tests/behavior_packs/**/
+          TARGET_DEST_PATH: ${{ steps.setup-bds.outputs.DOWNLOAD_PATH }}/development_behavior_packs/
+
+      - name: Prepare behavior packs
+        run: |
+          ls -la ${{ steps.setup-bds.outputs.DOWNLOAD_PATH }}/development_behavior_packs/
+          echo ""
+          echo ""
+          echo ${{ toJson(steps.setup-packs.outputs.DISCOVERED_MANIFESTS) }}
+          echo ""
+          echo ""
+          echo ${{ toJson(steps.setup-packs.outputs.DISCOVERED_MANIFESTS) }} | jq
+
+      - uses: ScriptAPIOSS/bds-gametest-run-action@v1
+        with:
+          BDS_PATH: ${{ steps.setup-bds.outputs.DOWNLOAD_PATH }}
+          TIMEOUT_TICKS: 120000
+          PACKS: |
+            ${{ steps.setup-packs.outputs.DISCOVERED_MANIFESTS }}
+            [{"pack_id":"9ea5aaca-78ee-4577-985e-297ecce474ba","version":[0,0,4]}]
+          TEST_TAGS: |
+            suite:default

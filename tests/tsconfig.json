@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "module": "ES2020",
+    "moduleResolution": "Node",
+    "target": "ES6",
+    "outDir": "behavior_packs/discord_gametest/scripts",
+    "isolatedModules": true,
+    "lib": ["DOM"],
+    "esModuleInterop": true,
+  },
+  "include": [ "src", "../src" ]
+}

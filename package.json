@@ -28,6 +28,7 @@
   "dependencies": {
     "@minecraft/server": "^1.1.0-beta.1.19.60-preview.24",
     "@minecraft/server-admin": "^1.0.0-beta.1.19.60-preview.24",
+    "@minecraft/server-gametest": "^1.0.0-beta.1.19.60-preview.24",
     "@minecraft/server-net": "^1.0.0-beta.1.19.60-preview.24",
     "big-integer": "^1.6.51",
     "discord-api-types": "^0.37.20",
