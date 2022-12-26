@@ -1,4 +1,4 @@
-name: bds
+name: BDS
 on:
   workflow_dispatch:
   push:
@@ -12,7 +12,7 @@ jobs:
           - "preview"
 
     runs-on: ubuntu-latest
-    name: BDS GameTest ${{ matrix.bds-channel }}
+    name: Test GameTest ${{ matrix.bds-channel }}
 
     steps:
       - uses: actions/checkout@v3
@@ -27,6 +27,7 @@ jobs:
 
       - name: Build behavior pack
         run: |
+          npm i
           touch .env
           echo BOT_TOKEN=${{ secrets.BOT_TOKEN }} >> .env
           echo TEST_GUILD=${{ secrets.TEST_GUILD }} >> .env
