@@ -62,3 +62,4 @@ jobs:
             [{"pack_id":"9ea5aaca-78ee-4577-985e-297ecce474ba","version":[0,0,4]}]
           TEST_TAGS: |
             suite:default
+            suite:debug
