@@ -43,16 +43,6 @@ jobs:
             ./tests/behavior_packs/**/
           TARGET_DEST_PATH: ${{ steps.setup-bds.outputs.DOWNLOAD_PATH }}/development_behavior_packs/
 
-      - name: Prepare behavior packs
-        run: |
-          ls -la ${{ steps.setup-bds.outputs.DOWNLOAD_PATH }}/development_behavior_packs/
-          echo ""
-          echo ""
-          echo ${{ toJson(steps.setup-packs.outputs.DISCOVERED_MANIFESTS) }}
-          echo ""
-          echo ""
-          echo ${{ toJson(steps.setup-packs.outputs.DISCOVERED_MANIFESTS) }} | jq
-
       - uses: ScriptAPIOSS/bds-gametest-run-action@v1
         if: ${{ matrix.bds-channel == 'preview' }}
         ## creates a timeout or else BDS runs until exceeds the job execution time limit
