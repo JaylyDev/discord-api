@@ -9,6 +9,9 @@ const webpack = require('webpack');
  */
 console.warn("[Warning] This webpack configuration is experimental, scripts may break in Minecraft.");
 
+/**
+ * @type {import('webpack').Configuration}
+ */
 const CopyrightNotice = `Copyright (c) Jayly. All rights reserved.
 Licensed under the Apache License, Version 2.0.
 The LICENSE file in the root directory of this source tree.`;
