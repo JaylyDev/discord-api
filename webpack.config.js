@@ -1,5 +1,6 @@
 const path = require("path");
 const TerserPlugin = require("terser-webpack-plugin");
+const webpack = require('webpack');
 
 /**
  * WARNING!
@@ -7,6 +8,13 @@ const TerserPlugin = require("terser-webpack-plugin");
  * PLEASE DON'T USE IT FOR PRODUCTION USE.
  */
 console.warn("[Warning] This webpack configuration is experimental, scripts may break in Minecraft.");
+
+/**
+ * @type {import('webpack').Configuration}
+ */
+const CopyrightNotice = `Copyright (c) Jayly. All rights reserved.
+Licensed under the Apache License, Version 2.0.
+The LICENSE file in the root directory of this source tree.`;
 
 /**
  * @type {import('webpack').Configuration}
@@ -30,7 +38,7 @@ const Configuration = {
         extensions: [".tsx", ".ts", ".js"]
     },
     optimization: {
-        minimize: false,
+        minimize: true,
         minimizer: [
             new TerserPlugin({
                 terserOptions: {
@@ -40,7 +48,7 @@ const Configuration = {
                 },
                 extractComments: false
             }),
-            // new webpack.BannerPlugin(`This file was automatically generated.`),    
+            new webpack.BannerPlugin(CopyrightNotice),    
         ]
     },
     output: {
@@ -57,10 +65,19 @@ const Configuration = {
     externals: {
         "@minecraft/server": '@minecraft/server',
         "@minecraft/server-ui": '@minecraft/server-ui',
-        "@minecraft/server-admin": '@minecraft/server-server-admin',
+        "@minecraft/server-admin": '@minecraft/server-admin',
         "@minecraft/server-gametest": '@minecraft/server-gametest',
         "@minecraft/server-net": '@minecraft/server-net',
     },
 };
 
-module.exports = Configuration;
+module.exports = (env) => {
+    // env.entry
+    if (!!env.entry) Configuration.entry = env.entry;
+    if (!!env.output) {
+        Configuration.output.path = path.resolve(__dirname, path.dirname(env.output));
+        Configuration.output.filename = path.basename(env.output);
+    };
+    if (env.minimize === 'false') Configuration.optimization.minimize = false;
+    return Configuration;
+};

@@ -1,0 +1,26 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Discord API GameTest",
+    "description": "Discord API GameTest",
+    "uuid": "9ea5aaca-78ee-4577-985e-297ecce474ba",
+    "min_engine_version": [1, 19, 0],
+    "version": [0, 0, 4]
+  },
+  "modules": [
+    {
+      "type": "script",
+      "description": "Discord API GameTest",
+      "uuid": "6a28e503-dfd2-45d1-b4e9-6d2602f233be",
+      "version": [1, 0, 0],
+      "language": "javascript",
+      "entry": "scripts/index.js"
+    }
+  ],
+  "dependencies": [
+    {"module_name": "@minecraft/server", "version": "1.1.0-beta"},
+    {"module_name": "@minecraft/server-gametest", "version": "1.0.0-beta"},
+    {"module_name": "@minecraft/server-net", "version": "1.0.0-beta"},
+    {"module_name": "@minecraft/server-admin", "version": "1.0.0-beta"}
+  ]
+}

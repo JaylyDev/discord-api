@@ -1,10 +1,10 @@
-name: cl
+name: CI
 
 on: [push]
 
 jobs:
-  scripts:
-    name: debug
+  build:
+    name: build
     runs-on: ubuntu-latest
 
     steps:
