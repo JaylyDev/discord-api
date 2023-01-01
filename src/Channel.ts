@@ -1,6 +1,6 @@
 import { Client } from "./Client";
 import { CreateMessage } from './factory/Requests/Channels';
-import fetch from './net-request';
+import fetch from './factory/request';
 import { Guild } from "./Guild";
 import type { APIActionRowComponent, APIAllowedMentions, APIApplication, APIAttachment, APIChannel, APIChannelMention, APIEmbed, APIMessage, APIMessageActionRowComponent, APIMessageActivity, APIMessageInteraction, APIMessageReference, APIReaction, APIStickerItem, APIThreadChannel, APIUser, MessageFlags, MessageType, RESTPostAPIChannelMessageJSONBody, Snowflake } from "discord-api-types/v9";
 import { User } from "./User";

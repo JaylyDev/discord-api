@@ -1,8 +1,8 @@
-import type { Snowflake, RESTGetAPIGuildQuery, RESTGetAPIAuditLogQuery } from "discord-api-types/v9";
-import { HttpRequestMethod } from "../Constants";
-import { CHANNEL, GUILD, GUILD_AUDIT_LOGS, GUILD_MEMBER } from "../Endpoints";
-import { InternalCallback } from "../Constants";
+import type { Snowflake, RESTGetAPIGuildQuery, RESTGetAPIAuditLogQuery, RESTPostAPIGuildsJSONBody } from "discord-api-types/v9";
+import { HttpRequestMethod } from "../Resources";
+import { CHANNEL, GUILD, GUILDS, GUILD_AUDIT_LOGS, GUILD_MEMBER } from "../Endpoints";
 import * as querystring from 'querystring';
+import request from "../request";
 
 /**
  * https://discord.com/developers/docs/resources/guild#get-guild
@@ -13,13 +13,13 @@ import * as querystring from 'querystring';
  * @returns
  */
 /** @internal */
-export function GetGuild(guildId: Snowflake, options: RESTGetAPIGuildQuery, BOT_TOKEN: string, callback: InternalCallback): Promise<string> {
+export function GetGuild(guildId: Snowflake, options: RESTGetAPIGuildQuery): Promise<string> {
   const method = HttpRequestMethod.GET;
   let path = GUILD(guildId);
 
   if (typeof options === 'object') path += '?' + querystring.stringify(options as any);
 
-  return callback(path, method, BOT_TOKEN);
+  return request(path, method);
 }
 
 /**
@@ -32,25 +32,37 @@ export function GetGuild(guildId: Snowflake, options: RESTGetAPIGuildQuery, BOT_
  * @returns Returns an audit log object for the guild.
  * @internal
  */
-export function GetGuildAuditLog(guildId: Snowflake, options: RESTGetAPIAuditLogQuery, BOT_TOKEN: string, callback: InternalCallback): Promise<string> {
+export function GetGuildAuditLog(guildId: Snowflake, options: RESTGetAPIAuditLogQuery): Promise<string> {
   const method = HttpRequestMethod.GET;
   let path = GUILD_AUDIT_LOGS(guildId);
 
   if (typeof options === 'object') path += '?' + querystring.stringify(options as any);
 
-  return callback(path, method, BOT_TOKEN);
+  return request(path, method);
 }
 
 /** @internal */
-export function GetChannel(channelId: Snowflake, BOT_TOKEN: string, callback: InternalCallback) {
+export function GetChannel(channelId: Snowflake) {
   const method = HttpRequestMethod.GET;
   const path = CHANNEL(channelId);
-  return callback(path, method, BOT_TOKEN);
+  return request(path, method);
 }
 
 /** @internal */
-export function getGuildMember (guildId: Snowflake, userId: Snowflake, BOT_TOKEN: string, callback: InternalCallback) {
+export function getGuildMember (guildId: Snowflake, userId: Snowflake) {
   const method = HttpRequestMethod.GET;
   const path = GUILD_MEMBER(guildId, userId);
-  return callback(path, method, BOT_TOKEN);
+  return request(path, method);
+};
+
+/** @internal */
+export function CreateGuild (options: RESTPostAPIGuildsJSONBody) {
+  const method = HttpRequestMethod.POST;
+  return request(GUILDS, method, options);
+};
+
+/** @internal */
+export function DeleteGuild (guildId: Snowflake) {
+  const method = HttpRequestMethod.DELETE;
+  return request(GUILD(guildId), method);
 };

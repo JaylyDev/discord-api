@@ -1,7 +1,7 @@
-import { Package, ServerNetDebug, version, npmDebug, packageName } from "./factory/Constants";
+import { Package, ServerNetDebug, version, npmDebug, packageName } from "./factory/Resources";
 import { http, HttpRequestMethod } from "@minecraft/server-net";
 import type * as npm from '@npm/types';
-import { DeepCopy } from "./deep-copy";
+import { DeepCopy } from "./factory/Resources";
 import * as semver from 'semver';
 
 /**

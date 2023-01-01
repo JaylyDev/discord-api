@@ -1,19 +1,16 @@
 import { GetChannel, GetGuildAuditLog, getGuildMember } from './factory/Requests/Guilds';
-import { Client } from './Client';
-import fetch from './net-request';
+import fetch from './factory/request';
 import { GuildVerificationLevel, GuildDefaultMessageNotifications, GuildExplicitContentFilter, APIRole, APIEmoji, GuildFeature, GuildMFALevel, GuildSystemChannelFlags, GuildPremiumTier, APIGuildWelcomeScreen, GuildNSFWLevel, APISticker, GuildHubType, RESTGetAPIAuditLogQuery, RESTGetAPIAuditLogResult, RESTGetAPIChannelMessagesQuery, RESTGetAPIChannelMessagesResult, RESTGetAPIChannelResult, RESTGetAPIGuildResult, RESTPostAPIChannelMessageJSONBody, Snowflake, APIGuild, RESTGetAPIGuildMemberResult, ChannelType } from 'discord-api-types/v9';
 import { CreateMessage, GetChannelMessages } from './factory/Requests/Channels';
 import { GuildMember } from './User';
 import { DMChannel, GroupDMChannel, GuildCategoryChannel, GuildForumChannel, GuildStageVoiceChannel, GuildTextChannel, GuildVoiceChannel, NewsChannel, ThreadChannel } from './factory/Channels';
-import { ServerNetDebug } from './factory/Constants';
+import { environ, ServerNetDebug } from './factory/Resources';
 
 /**
  * Guilds in Discord represent an isolated collection of users and channels,
  * and are often referred to as "servers" in the UI.
  */
 export class Guild {
-  /** @internal */
-  private readonly client: Client;
   /**
    * Guild id
    */
@@ -187,7 +184,7 @@ export class Guild {
    * @returns aduit log object 
    */
   async getAuditLog(options?: RESTGetAPIAuditLogQuery) {
-    const response: string = await GetGuildAuditLog(this.id, options, this.client['token'], fetch);
+    const response: string = await GetGuildAuditLog(this.id, options);
     const result: RESTGetAPIAuditLogResult = JSON.parse(response);
     return result;
   };
@@ -198,7 +195,7 @@ export class Guild {
    * @param options 
    */
   public sendMessage(channelId: Snowflake, options: RESTPostAPIChannelMessageJSONBody) {
-    CreateMessage(channelId, options, this.client['token'], fetch).catch((err) => console.error(err));
+    CreateMessage(channelId, options).catch((err) => console.error(err));
   };
 
   /**
@@ -208,7 +205,7 @@ export class Guild {
    * @returns 
    */
   public async getMessages(channelId: Snowflake, options: RESTGetAPIChannelMessagesQuery) {
-    const response: string = await GetChannelMessages(channelId, options, this.client['token'], fetch);
+    const response: string = await GetChannelMessages(channelId, options);
     const result: RESTGetAPIChannelMessagesResult = JSON.parse(response);
     return result;
   };
@@ -219,7 +216,7 @@ export class Guild {
    * @returns A wrapped channel class if channel exist
    */
   async getChannel(channelId: Snowflake) {
-    const response: string = await GetChannel(channelId, this.client['token'], fetch);
+    const response: string = await GetChannel(channelId);
     const result = JSON.parse(response) as RESTGetAPIChannelResult;
 
     switch (result.type) {
@@ -249,14 +246,13 @@ export class Guild {
   };
 
   public async getGuildMember (userId: Snowflake) {
-    const response: string = await getGuildMember(this.id, userId, this.client['token'], fetch);
+    const response: string = await getGuildMember(this.id, userId);
     const result: RESTGetAPIGuildMemberResult = JSON.parse(response);
-    return new GuildMember(result, this.client);
+    return new GuildMember(result);
   };
 
   /** @internal */
-  constructor(response: RESTGetAPIGuildResult, client: Client) {
-    this.client = client;
+  constructor(response: RESTGetAPIGuildResult) {
     this.id = response.id;
     this.name = response.name;
     this.icon = response.icon;

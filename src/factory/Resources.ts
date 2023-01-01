@@ -54,7 +54,7 @@ export const npmDebug = new Debug('npm');
 /**
  * @internal
  */
-export type InternalCallback = (url: string, method: HttpRequestMethod, BOT_TOKEN: string, body?: object) => Promise<string>;
+export type InternalCallback = (url: string, method: HttpRequestMethod, body?: object) => Promise<string>;
 
 export enum HttpRequestMethod {
   /**
@@ -74,3 +74,36 @@ export enum HttpRequestMethod {
    */
   DELETE = "DELETE",
 }
+
+/**
+ * Clone the object using iteration
+ * @param obj object
+ * @internal
+ */
+export function DeepCopy(obj: object): object {
+  if (obj === null || obj === undefined || typeof obj !== "object") {
+    return obj;
+  }
+  if (obj instanceof Array) {
+    var cloneA = [];
+    for (var i = 0; i < obj.length; ++i) {
+      cloneA[i] = DeepCopy(obj[i]);
+    }
+    return cloneA;
+  }
+  var cloneO = {};
+  for (var e in obj) {
+    cloneO[e] = DeepCopy(obj[e]);
+  }
+  return cloneO;
+};
+
+interface Dict<T> {
+  [key: string]: T | undefined;
+};
+
+/**
+ * The `environ` property returns an object containing the user environment.
+ * See [`environ(7)`](http://man7.org/linux/man-pages/man7/environ.7.html).
+ */
+export const environ: Dict<string> = {};
