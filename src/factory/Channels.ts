@@ -29,14 +29,17 @@ import {
     APIVoiceChannelBase,
     APIDMChannel,
     APIGroupDMChannel,
+    RESTPostAPIChannelMessageJSONBody,
 } from "discord-api-types/v9";
+import { CreateMessage } from "./Requests/Channels";
+import { Message } from "../Channel";
 import { Guild } from "../Guild";
 
 //////////////////
 // DM Channel API
 /////////////////
 
-class DMChannelBase<T extends ChannelType> implements APIDMChannelBase<T> {
+export class DMChannelBase<T extends ChannelType> implements APIDMChannelBase<T> {
     /** @internal */
     constructor(response: APIDMChannelBase<T>) {
         this.recipients = response.recipients;
@@ -124,7 +127,7 @@ export class PartialChannel implements APIPartialChannel {
  * This interface is used to allow easy extension for other channel types. While
  * also allowing `APIPartialChannel` to be used without breaking.
  */
-class ChannelBase<T extends ChannelType> extends PartialChannel implements APIChannelBase<T> {
+export class ChannelBase<T extends ChannelType> extends PartialChannel implements APIChannelBase<T> {
     /** @internal */
     constructor(response: APIChannelBase<T>) {
         super(response);
@@ -161,6 +164,23 @@ export class TextBasedChannel<T extends ChannelType> extends ChannelBase<T> impl
      * The absence of this field in API calls and Gateway events should indicate that slowmode has been reset to the default value.
      */
     readonly rateLimitPerUser?: number;
+    /**
+     * Post a message to a guild text or DM channel. Returns a message object.
+     */
+    async sendMessage(options: string | RESTPostAPIChannelMessageJSONBody) {
+        if (typeof options === 'string') {
+            const requestOptions: RESTPostAPIChannelMessageJSONBody = {
+                content: options,
+            };
+            const response = await CreateMessage(this.id, requestOptions);
+            return new Message(JSON.parse(response));
+        }
+        else if (typeof options === 'object') {
+            const response = await CreateMessage(this.id, options);
+            return new Message(JSON.parse(response));
+        }
+        else throw new TypeError(`Argument of type '${typeof options}' is not assignable to parameter of type 'string | RESTPostAPIChannelMessageJSONBody'.`);
+    };
 };
 export class GuildChannel<T extends ChannelType> extends ChannelBase<T> implements APIGuildChannel<T> {
     /** @internal */
@@ -277,7 +297,7 @@ export class NewsChannel extends GuildTextChannel<ChannelType.GuildAnnouncement>
 // Guild Voice Channel API
 ///////////////////////////
 
-class VoiceChannelBase<T extends ChannelType> extends GuildChannel<T> implements APIVoiceChannelBase<T> {
+export class VoiceChannelBase<T extends ChannelType> extends GuildChannel<T> implements APIVoiceChannelBase<T> {
     /** @internal */
     constructor (response: APIVoiceChannelBase<T>) {
         super(response);

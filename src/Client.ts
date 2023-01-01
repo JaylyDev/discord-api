@@ -1,7 +1,8 @@
-import type { RESTGetAPIGuildQuery, RESTGetAPIGuildResult, RESTPostAPIChannelMessageJSONBody, RESTPostAPIGuildsJSONBody, Snowflake } from 'discord-api-types/v9';
+import type { RESTGetAPIGuildQuery, RESTGetAPIGuildResult, RESTPostAPIGuildsJSONBody, Snowflake } from 'discord-api-types/v9';
+import { GetChannel, Channel, DeleteChanel } from './factory/Requests/Channels';
 import { CreateGuild, DeleteGuild, GetGuild } from './factory/Requests/Guilds';
+import { DiscordAPIError, environ } from './factory/Resources';
 import { Guild } from './Guild';
-import { environ } from './factory';
 
 /**
  * A class that wraps the state of a Discord guild.
@@ -38,9 +39,37 @@ export class GuildOperation {
     try {
       await DeleteGuild(guildId);
       return true;
+    } catch {
+      throw new DiscordAPIError(`Fail to delete guild '${guildId}'`);
+    };
+  };
+};
+/**
+ * A class that wraps the state of a Discord channel.
+ */
+export class ChannelOperation {
+  /**
+   * Get infomation about discord channel
+   * @param channelId 
+   * @param options get channel options
+   * @returns channel object
+   */
+  public async get(channelId: Snowflake) {
+    return await GetChannel(channelId);
+  };
+  /**
+   * Delete a channel, or close a private message.
+   * Requires the `MANAGE_CHANNELS` permission for the guild, or `MANAGE_THREADS` if the channel is a thread.
+   * Deleting a category does not delete its child channels,
+   * they will have their `parent_id` removed and a Channel Update Gateway event will fire for each of them. 
+   * Returns a channel object on success.
+   */
+  public async delete(channelId: Snowflake): Promise<Channel> {
+    try {
+      const rawResponse = await DeleteChanel(channelId);
+      return JSON.parse(rawResponse) as Channel;
     } catch (error) {
-      console.error(error);
-      return false;
+      throw new DiscordAPIError(`Fail to delete channel '${channelId}'`);
     }
   };
 };
@@ -59,6 +88,10 @@ export class Client {
    * A class that wraps the state of a Discord guild.
    */
   public readonly guild = new GuildOperation();
+  /**
+   * A class that wraps the state of a Discord guild.
+   */
+  public readonly channel = new ChannelOperation();
 
   /**
    * Creates a client

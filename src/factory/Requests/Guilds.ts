@@ -1,6 +1,6 @@
-import type { Snowflake, RESTGetAPIGuildQuery, RESTGetAPIAuditLogQuery, RESTPostAPIGuildsJSONBody } from "discord-api-types/v9";
+import { Snowflake, RESTGetAPIGuildQuery, RESTGetAPIAuditLogQuery, RESTPostAPIGuildsJSONBody } from "discord-api-types/v9";
 import { HttpRequestMethod } from "../Resources";
-import { CHANNEL, GUILD, GUILDS, GUILD_AUDIT_LOGS, GUILD_MEMBER } from "../Endpoints";
+import { GUILD, GUILDS, GUILD_AUDIT_LOGS, GUILD_MEMBER } from "../Endpoints";
 import * as querystring from 'querystring';
 import request from "../request";
 
@@ -38,13 +38,6 @@ export function GetGuildAuditLog(guildId: Snowflake, options: RESTGetAPIAuditLog
 
   if (typeof options === 'object') path += '?' + querystring.stringify(options as any);
 
-  return request(path, method);
-}
-
-/** @internal */
-export function GetChannel(channelId: Snowflake) {
-  const method = HttpRequestMethod.GET;
-  const path = CHANNEL(channelId);
   return request(path, method);
 }
 

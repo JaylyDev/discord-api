@@ -56,6 +56,9 @@ export const npmDebug = new Debug('npm');
  */
 export type InternalCallback = (url: string, method: HttpRequestMethod, body?: object) => Promise<string>;
 
+/**
+ * A set of request methods to indicate the desired action to be performed between Minecraft and Discord API.
+ */
 export enum HttpRequestMethod {
   /**
    * The GET method requests a representation of the specified resource. Requests using GET should only retrieve data.
@@ -107,3 +110,10 @@ interface Dict<T> {
  * See [`environ(7)`](http://man7.org/linux/man-pages/man7/environ.7.html).
  */
 export const environ: Dict<string> = {};
+
+export class DiscordAPIError extends Error {
+  constructor (message: string) {
+    super(message);
+    ServerNetDebug.error(message);
+  };
+};

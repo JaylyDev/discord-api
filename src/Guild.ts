@@ -1,10 +1,9 @@
-import { GetChannel, GetGuildAuditLog, getGuildMember } from './factory/Requests/Guilds';
-import fetch from './factory/request';
-import { GuildVerificationLevel, GuildDefaultMessageNotifications, GuildExplicitContentFilter, APIRole, APIEmoji, GuildFeature, GuildMFALevel, GuildSystemChannelFlags, GuildPremiumTier, APIGuildWelcomeScreen, GuildNSFWLevel, APISticker, GuildHubType, RESTGetAPIAuditLogQuery, RESTGetAPIAuditLogResult, RESTGetAPIChannelMessagesQuery, RESTGetAPIChannelMessagesResult, RESTGetAPIChannelResult, RESTGetAPIGuildResult, RESTPostAPIChannelMessageJSONBody, Snowflake, APIGuild, RESTGetAPIGuildMemberResult, ChannelType } from 'discord-api-types/v9';
-import { CreateMessage, GetChannelMessages } from './factory/Requests/Channels';
+import { GetGuildAuditLog, getGuildMember } from './factory/Requests/Guilds';
+import { GuildVerificationLevel, GuildDefaultMessageNotifications, GuildExplicitContentFilter, APIRole, APIEmoji, GuildFeature, GuildMFALevel, GuildSystemChannelFlags, GuildPremiumTier, APIGuildWelcomeScreen, GuildNSFWLevel, APISticker, GuildHubType, RESTGetAPIAuditLogQuery, RESTGetAPIAuditLogResult, RESTGetAPIChannelMessagesQuery, RESTGetAPIChannelMessagesResult, RESTGetAPIGuildResult, RESTPostAPIChannelMessageJSONBody, Snowflake, RESTGetAPIGuildMemberResult, ChannelType, GuildTextChannelType } from 'discord-api-types/v9';
+import { CreateMessage, GetChannelMessages, GetGuildChannels } from './factory/Requests/Channels';
 import { GuildMember } from './User';
-import { DMChannel, GroupDMChannel, GuildCategoryChannel, GuildForumChannel, GuildStageVoiceChannel, GuildTextChannel, GuildVoiceChannel, NewsChannel, ThreadChannel } from './factory/Channels';
-import { environ, ServerNetDebug } from './factory/Resources';
+import { DiscordAPIError } from './factory/Resources';
+import { GuildChannel } from './factory/Channels';
 
 /**
  * Guilds in Discord represent an isolated collection of users and channels,
@@ -211,41 +210,27 @@ export class Guild {
   };
 
   /**
+   * Returns a list of guild channel objects. Does not include threads.
+   */
+  public async getChannels() {
+    const response: string = await GetGuildChannels(this.id);
+    const channels: GuildChannel<ChannelType>[] = JSON.parse(response);
+    return channels;
+  };
+
+  /**
    * Get channel from current guild
    * @param channelId 
    * @returns A wrapped channel class if channel exist
    */
   async getChannel(channelId: Snowflake) {
-    const response: string = await GetChannel(channelId);
-    const result = JSON.parse(response) as RESTGetAPIChannelResult;
-
-    switch (result.type) {
-      case ChannelType.GuildText:
-        return new GuildTextChannel(result);
-      case ChannelType.DM:
-        return new DMChannel(result);
-      case ChannelType.GuildVoice:
-        return new GuildVoiceChannel(result);
-      case ChannelType.GroupDM:
-        return new GroupDMChannel(result);
-      case ChannelType.GuildCategory:
-        return new GuildCategoryChannel(result);
-      case ChannelType.GuildAnnouncement:
-        return new NewsChannel(result);
-      case ChannelType.AnnouncementThread || ChannelType.PublicThread || ChannelType.PrivateThread:
-        return new ThreadChannel(result);
-      case ChannelType.GuildStageVoice:
-        return new GuildStageVoiceChannel(result);
-      case ChannelType.GuildForum:
-        return new GuildForumChannel(result);
-      
-      default:
-        ServerNetDebug.warn('Could not identify type of channel:', result.type);
-        return result;
-    }
+    const channels = await this.getChannels();
+    const channelIndex = channels.findIndex(({id}) => id === channelId);
+    if (channelIndex > -1) return channels[channelIndex];
+    else throw new DiscordAPIError(`Channel '${channelId}' not found in guild '${this.name}'`);
   };
 
-  public async getGuildMember (userId: Snowflake) {
+  public async getMember (userId: Snowflake) {
     const response: string = await getGuildMember(this.id, userId);
     const result: RESTGetAPIGuildMemberResult = JSON.parse(response);
     return new GuildMember(result);

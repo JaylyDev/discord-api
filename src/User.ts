@@ -1,5 +1,6 @@
 import type { APIGuildMember, APIUser, Snowflake, UserFlags, UserPremiumType, } from "discord-api-types/v9";
 import { Client } from "./Client";
+import { SnowflakeToDate } from "./factory/Snowflake";
 
 /**
  * User Object
