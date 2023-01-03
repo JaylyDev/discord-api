@@ -31,7 +31,7 @@ import {
     APIGroupDMChannel,
     RESTPostAPIChannelMessageJSONBody,
 } from "discord-api-types/v9";
-import { CreateMessage } from "./Requests/Channels";
+import { CreateMessage } from "../Requests/Channels";
 import { Message } from "../Channel";
 import { Guild } from "../Guild";
 
@@ -39,6 +39,9 @@ import { Guild } from "../Guild";
 // DM Channel API
 /////////////////
 
+/**
+ * The base structure of a DM channel
+ */
 export class DMChannelBase<T extends ChannelType> implements APIDMChannelBase<T> {
     /** @internal */
     constructor(response: APIDMChannelBase<T>) {
@@ -58,6 +61,9 @@ export class DMChannelBase<T extends ChannelType> implements APIDMChannelBase<T>
     readonly id: string;
     readonly name?: string;
 };
+/**
+ * The class that represents a group DM channel
+ */
 export class GroupDMChannel extends DMChannelBase<ChannelType.GroupDM> implements APIGroupDMChannel {
     /** @internal */
     constructor(response: APIGroupDMChannel) {
@@ -84,6 +90,9 @@ export class GroupDMChannel extends DMChannelBase<ChannelType.GroupDM> implement
     readonly id: string;
     readonly recipients?: APIUser[];
 };
+/**
+ * The class that represents a DM channel
+ */
 export class DMChannel extends DMChannelBase<ChannelType.DM> implements APIDMChannel {
     /** @internal */
     constructor(response: APIDMChannel) {
@@ -182,6 +191,9 @@ export class TextBasedChannel<T extends ChannelType> extends ChannelBase<T> impl
         else throw new TypeError(`Argument of type '${typeof options}' is not assignable to parameter of type 'string | RESTPostAPIChannelMessageJSONBody'.`);
     };
 };
+/**
+ * The class that represents a guild channel
+ */
 export class GuildChannel<T extends ChannelType> extends ChannelBase<T> implements APIGuildChannel<T> {
     /** @internal */
     constructor(response: APIGuildChannel<T>, guild?: Guild) {
@@ -224,6 +236,9 @@ export class GuildChannel<T extends ChannelType> extends ChannelBase<T> implemen
      */
     readonly guild: Guild;
 };
+/**
+ * The class that represents a text channel in a guild
+ */
 export class GuildTextChannel<T extends GuildTextChannelType> extends TextBasedChannel<T> implements APIGuildTextChannel<T> {
     /** @internal */
     constructor (response: APIGuildTextChannel<T>, guild?: Guild) {
@@ -282,12 +297,19 @@ export class GuildTextChannel<T extends GuildTextChannelType> extends TextBasedC
     readonly guild: Guild;
 }
 
+/**
+ * The class that represents a text channel
+ */
 export class TextChannel extends GuildTextChannel<ChannelType.GuildText> implements APITextChannel {
     constructor (response: APITextChannel) {
         super(response);
     };
 };
-export class NewsChannel extends GuildTextChannel<ChannelType.GuildAnnouncement> implements APINewsChannel {
+/**
+ * The class that represents an announcement channel in a guild,
+ * a channel that users can follow and crosspost into their own guild
+ */
+export class GuildAnnouncementChannel extends GuildTextChannel<ChannelType.GuildAnnouncement> implements APINewsChannel {
     constructor (response: APINewsChannel) {
         super(response);
     };
@@ -297,6 +319,9 @@ export class NewsChannel extends GuildTextChannel<ChannelType.GuildAnnouncement>
 // Guild Voice Channel API
 ///////////////////////////
 
+/**
+ * The base structure of a voice channel
+ */
 export class VoiceChannelBase<T extends ChannelType> extends GuildChannel<T> implements APIVoiceChannelBase<T> {
     /** @internal */
     constructor (response: APIVoiceChannelBase<T>) {
@@ -310,6 +335,9 @@ export class VoiceChannelBase<T extends ChannelType> extends GuildChannel<T> imp
     readonly rtcRegion?: string | null;
 }
 
+/**
+ * The structure of a voice channel in a guild.
+ */
 export class GuildVoiceChannel extends VoiceChannelBase<ChannelType.GuildVoice> implements APIGuildVoiceChannel {
     /** @internal */
     constructor (response: APIGuildVoiceChannel) {
@@ -323,16 +351,27 @@ export class GuildVoiceChannel extends VoiceChannelBase<ChannelType.GuildVoice> 
     readonly videoQualityMode?: VideoQualityMode;
 }
 
+/**
+ * The class that represents a stage voice channel in a guild.
+ */
 export class GuildStageVoiceChannel extends VoiceChannelBase<ChannelType.GuildStageVoice> implements APIGuildStageVoiceChannel {
     constructor (response: APIGuildStageVoiceChannel) {
         super(response);
     };
 };
+
+/**
+ * The class that represents a category channel in a guild.
+ */
 export class GuildCategoryChannel extends GuildChannel<ChannelType.GuildCategory> implements APIGuildCategoryChannel {
     constructor (response: APIGuildCategoryChannel) {
         super(response);
     };
 };
+
+/**
+ * The class that represents a thread channel in a guild.
+ */
 export class ThreadChannel extends GuildChannel<ChannelType.PublicThread | ChannelType.PrivateThread | ChannelType.AnnouncementThread> {
     /** @internal */
     constructor (response: APIThreadChannel, guild?: Guild) {
@@ -359,6 +398,10 @@ export class ThreadChannel extends GuildChannel<ChannelType.PublicThread | Chann
     readonly lastPinTimestamp?: string | null;
     readonly rateLimitPerUser?: number;
 };
+
+/**
+ * The class that represents a forum channel in a guild.
+ */
 export class GuildForumChannel extends GuildTextChannel<ChannelType.GuildForum> {
     /** @internal */
     constructor (response: APIGuildForumChannel) {

@@ -26,7 +26,7 @@ export const version = '1.0.5';
 /**
  * discord-api submodule version
  */
-export const moduleVersion = '0.0.5';
+export const moduleVersion = '0.1.0-beta.1';
 /**
  * @internal
  */

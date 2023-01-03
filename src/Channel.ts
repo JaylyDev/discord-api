@@ -1,4 +1,4 @@
-import { CreateMessage } from './factory/Requests/Channels';
+import { CreateMessage, DeleteMessage, GetChannel } from './Requests/Channels';
 import type { APIActionRowComponent, APIApplication, APIAttachment, APIChannelMention, APIEmbed, APIMessage, APIMessageActionRowComponent, APIMessageActivity, APIMessageInteraction, APIMessageReference, APIReaction, APIStickerItem, APIThreadChannel, APIUser, MessageFlags, MessageType, RESTPostAPIChannelMessageJSONBody } from "discord-api-types/v9";
 import { User } from "./User";
 import { ThreadChannel } from "./factory/Channels";
@@ -232,6 +232,22 @@ export class Message {
       return new Message(JSON.parse(response));
     }
     else throw new TypeError(`Argument of type '${typeof options}' is not assignable to parameter of type 'string | RESTPostAPIChannelMessageJSONBody'.`);
+  };
+
+  /**
+   * Delete a message. If operating on a guild channel and trying
+   * to delete a message that was not sent by the current user, 
+   * this endpoint requires the `MANAGE_MESSAGES` permission.
+   */
+  async delete() {
+    await DeleteMessage(this.channelId, this.id);
+  };
+
+  /**
+   * Gets the channel object the message was sent in
+   */
+  async getChannel() {
+    return await GetChannel(this.channelId);
   };
 
   /** @internal */

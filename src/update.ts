@@ -8,7 +8,7 @@ import * as semver from 'semver';
  * Check if update available for the package 
  * @internal
  */
-export async function getUpdate () {
+async function getUpdate () {
   const url = Package.homepage;
   const response = await http.get(url);
 
@@ -48,7 +48,7 @@ async function testOnly_packageDownload () {
   return parseInt(String(ContentLength.value ?? 0)) / (timeTaken / 1000);
 };
 
-getUpdate();
+// getUpdate();
 // (async () => {
 //   const DownloadSpeed = await testOnly_packageDownload();
 //   const kbps = (DownloadSpeed / 1000).toFixed(3);

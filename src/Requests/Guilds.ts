@@ -1,8 +1,8 @@
 import { Snowflake, RESTGetAPIGuildQuery, RESTGetAPIAuditLogQuery, RESTPostAPIGuildsJSONBody } from "discord-api-types/v9";
-import { HttpRequestMethod } from "../Resources";
-import { GUILD, GUILDS, GUILD_AUDIT_LOGS, GUILD_MEMBER } from "../Endpoints";
+import { HttpRequestMethod } from "../factory/Resources";
+import { GUILD, GUILDS, GUILD_AUDIT_LOGS, GUILD_MEMBER } from "../factory/Endpoints";
 import * as querystring from 'querystring';
-import request from "../request";
+import request from "../factory/request";
 
 /**
  * https://discord.com/developers/docs/resources/guild#get-guild

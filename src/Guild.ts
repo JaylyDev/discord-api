@@ -1,9 +1,10 @@
-import { GetGuildAuditLog, getGuildMember } from './factory/Requests/Guilds';
+import { GetGuildAuditLog, getGuildMember } from './Requests/Guilds';
 import { GuildVerificationLevel, GuildDefaultMessageNotifications, GuildExplicitContentFilter, APIRole, APIEmoji, GuildFeature, GuildMFALevel, GuildSystemChannelFlags, GuildPremiumTier, APIGuildWelcomeScreen, GuildNSFWLevel, APISticker, GuildHubType, RESTGetAPIAuditLogQuery, RESTGetAPIAuditLogResult, RESTGetAPIChannelMessagesQuery, RESTGetAPIChannelMessagesResult, RESTGetAPIGuildResult, RESTPostAPIChannelMessageJSONBody, Snowflake, RESTGetAPIGuildMemberResult, ChannelType, GuildTextChannelType } from 'discord-api-types/v9';
-import { CreateMessage, GetChannelMessages, GetGuildChannels } from './factory/Requests/Channels';
+import { CreateMessage, GetChannelMessages, GetGuildChannels } from './Requests/Channels';
 import { GuildMember } from './User';
 import { DiscordAPIError } from './factory/Resources';
 import { GuildChannel } from './factory/Channels';
+import { deprecate } from './factory/deprecate';
 
 /**
  * Guilds in Discord represent an isolated collection of users and channels,
@@ -192,9 +193,10 @@ export class Guild {
    * Send a message in a channel
    * @param channelId 
    * @param options 
+   * @deprecated Please use `guild.getChannel().sendMessage()` to send a message to a specific channel
    */
   public sendMessage(channelId: Snowflake, options: RESTPostAPIChannelMessageJSONBody) {
-    CreateMessage(channelId, options).catch((err) => console.error(err));
+    deprecate(CreateMessage, "Please use 'guild.getChannel().sendMessage()' to send a message to a specific channel")(channelId, options);
   };
 
   /**
@@ -214,7 +216,7 @@ export class Guild {
    */
   public async getChannels() {
     const response: string = await GetGuildChannels(this.id);
-    const channels: GuildChannel<ChannelType>[] = JSON.parse(response);
+    const channels: GuildChannel<any>[] = JSON.parse(response);
     return channels;
   };
 
@@ -223,11 +225,13 @@ export class Guild {
    * @param channelId 
    * @returns A wrapped channel class if channel exist
    */
-  async getChannel(channelId: Snowflake) {
+  async getChannel<T extends ChannelType>(channelId: Snowflake, expectedChannelType?: T): Promise<GuildChannel<T>> {
     const channels = await this.getChannels();
     const channelIndex = channels.findIndex(({id}) => id === channelId);
-    if (channelIndex > -1) return channels[channelIndex];
-    else throw new DiscordAPIError(`Channel '${channelId}' not found in guild '${this.name}'`);
+    const channel = channels[channelIndex];
+    if (!channel) throw new DiscordAPIError(`Channel '${channelId}' not found in guild '${this.name}'`);
+    else if (typeof expectedChannelType === 'number' && channel.type !== expectedChannelType) throw new DiscordAPIError(`The type of the channel '${ChannelType[channel.type]}' is not the same as expected channel type '${ChannelType[expectedChannelType]}'.`);
+    else return channel;
   };
 
   public async getMember (userId: Snowflake) {

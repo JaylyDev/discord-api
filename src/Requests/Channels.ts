@@ -1,9 +1,9 @@
 import { Snowflake, RESTPostAPIChannelMessageJSONBody, RESTGetAPIChannelMessagesQuery, ChannelType, RESTGetAPIChannelResult, GuildTextChannelType } from 'discord-api-types/v9';
-import { HttpRequestMethod, ServerNetDebug } from '../Resources';
-import { CHANNEL, CHANNEL_MESSAGES, GUILD_CHANNELS } from '../Endpoints';
+import { HttpRequestMethod, ServerNetDebug } from '../factory/Resources';
+import { CHANNEL, CHANNEL_MESSAGE, CHANNEL_MESSAGES, GUILD_CHANNELS } from '../factory/Endpoints';
 import * as querystring from 'querystring';
-import request from '../request';
-import { GuildTextChannel, DMChannel, GuildVoiceChannel, GroupDMChannel, GuildCategoryChannel, NewsChannel, ThreadChannel, GuildStageVoiceChannel, GuildForumChannel } from '../Channels';
+import request from '../factory/request';
+import { GuildTextChannel, DMChannel, GuildVoiceChannel, GroupDMChannel, GuildCategoryChannel, GuildAnnouncementChannel, ThreadChannel, GuildStageVoiceChannel, GuildForumChannel } from '../factory/Channels';
 
 /** @internal */
 export function CreateMessage(channelId: Snowflake, options: RESTPostAPIChannelMessageJSONBody): Promise<string> {
@@ -23,9 +23,17 @@ export function GetChannelMessages(channelId: Snowflake, options: RESTGetAPIChan
 };
 
 /** @internal */
-export function DeleteChanel(channelId: Snowflake) {
+export function DeleteChannel(channelId: Snowflake) {
   const method = HttpRequestMethod.DELETE;
   const path = CHANNEL(channelId);
+
+  return request(path, method);
+};
+
+/** @internal */
+export function DeleteMessage(channelId: Snowflake, messageId: Snowflake) {
+  const method = HttpRequestMethod.DELETE;
+  const path = CHANNEL_MESSAGE(channelId, messageId);
 
   return request(path, method);
 };
@@ -50,7 +58,7 @@ export async function GetChannel(channelId: Snowflake) {
     case ChannelType.GuildCategory:
       return new GuildCategoryChannel(result);
     case ChannelType.GuildAnnouncement:
-      return new NewsChannel(result);
+      return new GuildAnnouncementChannel(result);
     case ChannelType.AnnouncementThread || ChannelType.PublicThread || ChannelType.PrivateThread:
       return new ThreadChannel(result);
     case ChannelType.GuildStageVoice:
@@ -70,4 +78,4 @@ export function GetGuildChannels(guildId: Snowflake) {
   return request(path, method);
 };
 
-export type Channel = GuildTextChannel<GuildTextChannelType> | DMChannel | GuildVoiceChannel | GroupDMChannel | GuildCategoryChannel | NewsChannel | ThreadChannel | GuildStageVoiceChannel | GuildForumChannel;
+export type Channel = GuildTextChannel<GuildTextChannelType> | DMChannel | GuildVoiceChannel | GroupDMChannel | GuildCategoryChannel | GuildAnnouncementChannel | ThreadChannel | GuildStageVoiceChannel | GuildForumChannel;

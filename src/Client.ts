@@ -1,6 +1,6 @@
 import type { RESTGetAPIGuildQuery, RESTGetAPIGuildResult, RESTPostAPIGuildsJSONBody, Snowflake } from 'discord-api-types/v9';
-import { GetChannel, Channel, DeleteChanel } from './factory/Requests/Channels';
-import { CreateGuild, DeleteGuild, GetGuild } from './factory/Requests/Guilds';
+import { GetChannel, Channel, DeleteChannel } from './Requests/Channels';
+import { CreateGuild, DeleteGuild, GetGuild } from './Requests/Guilds';
 import { DiscordAPIError, environ } from './factory/Resources';
 import { Guild } from './Guild';
 
@@ -49,7 +49,7 @@ export class GuildOperation {
  */
 export class ChannelOperation {
   /**
-   * Get infomation about discord channel
+   * Get infomation about discord channel from discord servers the bot is in
    * @param channelId 
    * @param options get channel options
    * @returns channel object
@@ -66,7 +66,7 @@ export class ChannelOperation {
    */
   public async delete(channelId: Snowflake): Promise<Channel> {
     try {
-      const rawResponse = await DeleteChanel(channelId);
+      const rawResponse = await DeleteChannel(channelId);
       return JSON.parse(rawResponse) as Channel;
     } catch (error) {
       throw new DiscordAPIError(`Fail to delete channel '${channelId}'`);
