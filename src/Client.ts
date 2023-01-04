@@ -1,8 +1,78 @@
-import type { RESTGetAPIGuildQuery, RESTGetAPIGuildResult, RESTPostAPIChannelMessageJSONBody, Snowflake } from 'discord-api-types/v9';
-import { GetGuild } from './factory/Requests/Guilds';
+import type { RESTGetAPIGuildQuery, RESTGetAPIGuildResult, RESTPostAPIGuildsJSONBody, Snowflake } from 'discord-api-types/v9';
+import { GetChannel, Channel, DeleteChannel } from './Requests/Channels';
+import { CreateGuild, DeleteGuild, GetGuild } from './Requests/Guilds';
+import { DiscordAPIError, environ } from './factory/Resources';
 import { Guild } from './Guild';
-import fetch from './net-request';
-import { CreateMessage } from './factory/Requests/Channels';
+
+/**
+ * A class that wraps the state of a Discord guild.
+ */
+export class GuildOperation {
+  /**
+   * Get infomation about discord server
+   * @param guildId 
+   * @param options get guild options
+   * @returns Guild object
+   */
+  public async get(guildId: Snowflake, options?: RESTGetAPIGuildQuery) {
+    const rawResponse: string = await GetGuild(guildId, options);
+    const guildResponse: RESTGetAPIGuildResult = JSON.parse(rawResponse);
+    return new Guild(guildResponse);
+  };
+  /**
+   * Create a new guild. Returns a guild object on success.
+   * This function can be used only by bots in less than 10 guilds.
+   * @param options options for creating a new guild
+   */
+  public async create(options: RESTPostAPIGuildsJSONBody) {
+    /**
+     * Returns a guild object on success.
+     */
+    const rawResponse: string = await CreateGuild(options);
+    const guildResponse: RESTGetAPIGuildResult = JSON.parse(rawResponse);
+    return new Guild(guildResponse);
+  };
+  /**
+   * Delete a guild permanently. User must be owner.
+   */
+  public async delete(guildId: Snowflake): Promise<boolean> {
+    try {
+      await DeleteGuild(guildId);
+      return true;
+    } catch {
+      throw new DiscordAPIError(`Fail to delete guild '${guildId}'`);
+    };
+  };
+};
+/**
+ * A class that wraps the state of a Discord channel.
+ */
+export class ChannelOperation {
+  /**
+   * Get infomation about discord channel from discord servers the bot is in
+   * @param channelId 
+   * @param options get channel options
+   * @returns channel object
+   */
+  public async get(channelId: Snowflake) {
+    return await GetChannel(channelId);
+  };
+  /**
+   * Delete a channel, or close a private message.
+   * Requires the `MANAGE_CHANNELS` permission for the guild, or `MANAGE_THREADS` if the channel is a thread.
+   * Deleting a category does not delete its child channels,
+   * they will have their `parent_id` removed and a Channel Update Gateway event will fire for each of them. 
+   * Returns a channel object on success.
+   */
+  public async delete(channelId: Snowflake): Promise<Channel> {
+    try {
+      const rawResponse = await DeleteChannel(channelId);
+      return JSON.parse(rawResponse) as Channel;
+    } catch (error) {
+      throw new DiscordAPIError(`Fail to delete channel '${channelId}'`);
+    }
+  };
+};
 
 /**
  * Represents a client connection that connects to Discord.
@@ -10,34 +80,24 @@ import { CreateMessage } from './factory/Requests/Channels';
  */
 export class Client {
   /** @internal */
-  private readonly token: string;
-
-  /**
-   * Get infomation about discord server
-   * @param guildId 
-   * @param options get guild options
-   * @returns Guild object
-   */
-  public async getGuild(guildId: Snowflake, options?: RESTGetAPIGuildQuery) {
-    const rawResponse: string = await GetGuild(guildId, options, this.token, fetch);
-    const guildResponse: RESTGetAPIGuildResult = JSON.parse(rawResponse);
-    return new Guild(guildResponse, this);
+  private set token(value: string) {
+    environ.DISCORD_TOKEN = value;
   };
 
   /**
-   * Send a message in a channel
-   * @param channelId 
-   * @param options 
+   * A class that wraps the state of a Discord guild.
    */
-  public sendMessage(channelId: Snowflake, options: RESTPostAPIChannelMessageJSONBody) {
-    CreateMessage(channelId, options, this.token, fetch);
-  };
+  public readonly guild = new GuildOperation();
+  /**
+   * A class that wraps the state of a Discord guild.
+   */
+  public readonly channel = new ChannelOperation();
 
   /**
    * Creates a client
    * @param token Discord bot token. **Do not share it with anyone.**
    */
-  constructor (token: string) {
+  constructor(token: string) {
     this.token = token;
   };
 };
