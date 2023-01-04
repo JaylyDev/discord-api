@@ -1,4 +1,4 @@
-# src-discord
+# discord factory
 
 A submodule that uses HTTP requests to connect to Discord API.
 

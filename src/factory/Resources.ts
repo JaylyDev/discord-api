@@ -26,7 +26,7 @@ export const version = '1.0.5';
 /**
  * discord-api submodule version
  */
-export const moduleVersion = '0.0.5';
+export const moduleVersion = '0.1.0-beta.1';
 /**
  * @internal
  */
@@ -54,8 +54,11 @@ export const npmDebug = new Debug('npm');
 /**
  * @internal
  */
-export type InternalCallback = (url: string, method: HttpRequestMethod, BOT_TOKEN: string, body?: object) => Promise<string>;
+export type InternalCallback = (url: string, method: HttpRequestMethod, body?: object) => Promise<string>;
 
+/**
+ * A set of request methods to indicate the desired action to be performed between Minecraft and Discord API.
+ */
 export enum HttpRequestMethod {
   /**
    * The GET method requests a representation of the specified resource. Requests using GET should only retrieve data.
@@ -74,3 +77,43 @@ export enum HttpRequestMethod {
    */
   DELETE = "DELETE",
 }
+
+/**
+ * Clone the object using iteration
+ * @param obj object
+ * @internal
+ */
+export function DeepCopy(obj: object): object {
+  if (obj === null || obj === undefined || typeof obj !== "object") {
+    return obj;
+  }
+  if (obj instanceof Array) {
+    var cloneA = [];
+    for (var i = 0; i < obj.length; ++i) {
+      cloneA[i] = DeepCopy(obj[i]);
+    }
+    return cloneA;
+  }
+  var cloneO = {};
+  for (var e in obj) {
+    cloneO[e] = DeepCopy(obj[e]);
+  }
+  return cloneO;
+};
+
+interface Dict<T> {
+  [key: string]: T | undefined;
+};
+
+/**
+ * The `environ` property returns an object containing the user environment.
+ * See [`environ(7)`](http://man7.org/linux/man-pages/man7/environ.7.html).
+ */
+export const environ: Dict<string> = {};
+
+export class DiscordAPIError extends Error {
+  constructor (message: string) {
+    super(message);
+    ServerNetDebug.error(message);
+  };
+};
