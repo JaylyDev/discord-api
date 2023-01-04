@@ -3,4 +3,3 @@ node_modules
 typings
 discord-docs
 built/local
-tests/behavior_packs/discord_gametest/scripts

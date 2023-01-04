@@ -1,11 +1,13 @@
 import type { APIGuildMember, APIUser, Snowflake, UserFlags, UserPremiumType, } from "discord-api-types/v9";
+import { SnowflakeToDate } from "./factory";
 import { Client } from "./Client";
-import { SnowflakeToDate } from "./factory/Snowflake";
 
 /**
  * User Object
  */
 export class User {
+  /** @internal */
+  private readonly client: Client;
   /**
    * The user's id
    */
@@ -89,7 +91,7 @@ export class User {
   public readonly tag: string;
 
   /** @internal */
-  constructor (response: APIUser) {
+  constructor (response: APIUser, client: Client) {
     this.id = response.id;
     this.username = response.username;
     this.discriminator = response.discriminator;
@@ -105,6 +107,8 @@ export class User {
     this.flags = response.flags;
     this.premiumType = response.premium_type;
     this.publicFlags = response.public_flags;
+
+    this.client = client;
     this.tag = `${this.username}#${this.discriminator}`;
   };
 }
@@ -170,8 +174,8 @@ export class GuildMember {
     return SnowflakeToDate(this.user.id);
   };
   /** @internal */
-  constructor (response: APIGuildMember) {
-    this.user = new User(response.user);
+  constructor (response: APIGuildMember, client: Client) {
+    this.user = new User(response.user, client);
     this.nick = response.nick;
     this.avatar = response.avatar;
     this.roles = response.roles;
@@ -181,5 +185,6 @@ export class GuildMember {
     this.mute = response.mute;
     this.pending = response.pending;
     this.communicationDisabledUntil = response.communication_disabled_until;
+    this.client = client;
   };
 };

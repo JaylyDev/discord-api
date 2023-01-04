@@ -1,9 +1,68 @@
-import { CreateMessage, DeleteMessage, GetChannel } from './Requests/Channels';
-import type { APIActionRowComponent, APIApplication, APIAttachment, APIChannelMention, APIEmbed, APIMessage, APIMessageActionRowComponent, APIMessageActivity, APIMessageInteraction, APIMessageReference, APIReaction, APIStickerItem, APIThreadChannel, APIUser, MessageFlags, MessageType, RESTPostAPIChannelMessageJSONBody } from "discord-api-types/v9";
+import { Client } from "./Client";
+import { CreateMessage } from './factory/Requests/Channels';
+import fetch from './net-request';
+import { Guild } from "./Guild";
+import type { APIActionRowComponent, APIAllowedMentions, APIApplication, APIAttachment, APIChannel, APIChannelMention, APIEmbed, APIMessage, APIMessageActionRowComponent, APIMessageActivity, APIMessageInteraction, APIMessageReference, APIReaction, APIStickerItem, APIThreadChannel, APIUser, MessageFlags, MessageType, RESTPostAPIChannelMessageJSONBody, Snowflake } from "discord-api-types/v9";
 import { User } from "./User";
 import { ThreadChannel } from "./factory/Channels";
 
+export interface PostChannelMessageBody {
+  /**
+   * The message contents (up to 2000 characters)
+   */
+  content?: string;
+  /**
+   * A nonce that can be used for optimistic message sending
+   */
+  nonce?: number | string;
+  /**
+   * `true` if this is a TTS message
+   */
+  tts?: boolean;
+  /**
+   * Embedded `rich` content (up to 6000 characters)
+   *
+   * See https://discord.com/developers/docs/resources/channel#embed-object
+   */
+  embeds?: APIEmbed[];
+  /**
+   * Embedded `rich` content
+   *
+   * See https://discord.com/developers/docs/resources/channel#embed-object
+   * @deprecated Use `embeds` instead
+   */
+  embed?: APIEmbed;
+  /**
+   * Allowed mentions for a message
+   *
+   * See https://discord.com/developers/docs/resources/channel#allowed-mentions-object
+   */
+  allowed_mentions?: APIAllowedMentions;
+  /**
+   * The components to include with the message
+   *
+   * See https://discord.com/developers/docs/interactions/message-components#component-object
+   */
+  components?: APIActionRowComponent<APIMessageActionRowComponent>[];
+  /**
+   * IDs of up to 3 stickers in the server to send in the message
+   *
+   * See https://discord.com/developers/docs/resources/sticker#sticker-object
+   */
+  sticker_ids?: [Snowflake] | [Snowflake, Snowflake] | [Snowflake, Snowflake, Snowflake];
+  /**
+   * Attachment objects with filename and description
+   */
+  attachments?: (Pick<APIAttachment, 'id' | 'description'> & Partial<Pick<APIAttachment, 'filename'>>)[];
+  /**
+   * Message flags combined as a bitfield
+   */
+  flags?: MessageFlags;
+};
+
 export class Message {
+  /** @internal */
+  private readonly client: Client;
   /**
    * ID of the message
    */
@@ -200,61 +259,34 @@ export class Message {
    * It can be used to estimate the relative position of the message in a thread in company with `total_message_sent` on parent thread
    */
   readonly position?: number;
+  /**
+   * The guild this channel belongs to for reference.
+   */
+  readonly guild: Guild;
 
   /**
    * Reply message
    * @param options message body
    */
-  async reply(options: string | RESTPostAPIChannelMessageJSONBody) {
-    if (typeof options === 'string') {
-      const requestOptions: RESTPostAPIChannelMessageJSONBody = {
-        content: options,
-        message_reference: {
-          channel_id: this.channelId,
-          fail_if_not_exists: true,
-          message_id: this.id
-        },
-      };
-      const response = await CreateMessage(this.id, requestOptions);
-      return new Message(JSON.parse(response));
-    }
-    else if (typeof options === 'object') {
-      const nativeOptions: RESTPostAPIChannelMessageJSONBody = {
-        ...options,
-        // message_reference must overwrite options
-        message_reference: {
-          channel_id: this.channelId,
-          fail_if_not_exists: true,
-          message_id: this.id
-        },
-      };
-      const response = await CreateMessage(this.id, nativeOptions);
-      return new Message(JSON.parse(response));
-    }
-    else throw new TypeError(`Argument of type '${typeof options}' is not assignable to parameter of type 'string | RESTPostAPIChannelMessageJSONBody'.`);
-  };
-
-  /**
-   * Delete a message. If operating on a guild channel and trying
-   * to delete a message that was not sent by the current user, 
-   * this endpoint requires the `MANAGE_MESSAGES` permission.
-   */
-  async delete() {
-    await DeleteMessage(this.channelId, this.id);
-  };
-
-  /**
-   * Gets the channel object the message was sent in
-   */
-  async getChannel() {
-    return await GetChannel(this.channelId);
+  reply (options: PostChannelMessageBody) {
+    const nativeOptions: RESTPostAPIChannelMessageJSONBody = {
+      ...options,
+      // message_reference must overwrite options
+      message_reference: {
+        channel_id: this.channelId,
+        fail_if_not_exists: true,
+        guild_id: this.guild.id,
+        message_id: this.id
+      },
+    };
+    CreateMessage(this.channelId, nativeOptions, this.client['token'], fetch);
   };
 
   /** @internal */
-  constructor(response: APIMessage) {
+  constructor (response: APIMessage, client: Client, guild: Guild) {
     this.id = response.id;
     this.channelId = response.channel_id;
-    this.author = new User(response.author);
+    this.author = new User(response.author, client);
     this.content = response.content;
     this.timestamp = response.timestamp;
     this.editedTimestamp = response.edited_timestamp;
@@ -281,5 +313,8 @@ export class Message {
     this.components = response.components;
     this.stickerItems = response.sticker_items;
     this.position = response.position;
+
+    this.guild = guild;
+    this.client = client;
   };
 };
