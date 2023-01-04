@@ -1,10 +1,11 @@
 import { GetGuildAuditLog, getGuildMember } from './Requests/Guilds';
-import { GuildVerificationLevel, GuildDefaultMessageNotifications, GuildExplicitContentFilter, APIRole, APIEmoji, GuildFeature, GuildMFALevel, GuildSystemChannelFlags, GuildPremiumTier, APIGuildWelcomeScreen, GuildNSFWLevel, APISticker, GuildHubType, RESTGetAPIAuditLogQuery, RESTGetAPIAuditLogResult, RESTGetAPIChannelMessagesQuery, RESTGetAPIChannelMessagesResult, RESTGetAPIGuildResult, RESTPostAPIChannelMessageJSONBody, Snowflake, RESTGetAPIGuildMemberResult, ChannelType, GuildTextChannelType } from 'discord-api-types/v9';
+import type { APIRole, APIEmoji, APIGuildWelcomeScreen, APISticker, RESTGetAPIAuditLogQuery, RESTGetAPIAuditLogResult, RESTGetAPIChannelMessagesQuery, RESTGetAPIChannelMessagesResult, RESTGetAPIGuildResult, RESTPostAPIChannelMessageJSONBody, Snowflake, RESTGetAPIGuildMemberResult,  } from "discord-api-types/v9";
 import { CreateMessage, GetChannelMessages, GetGuildChannels } from './Requests/Channels';
 import { GuildMember } from './User';
 import { DiscordAPIError } from './factory/Resources';
-import { Channel, ChannelClassType, GuildChannel } from './factory/Channels';
+import { Channel, ChannelClassType } from './factory/Channels';
 import { deprecate } from './factory/deprecate';
+import { ChannelType, GuildDefaultMessageNotifications, GuildExplicitContentFilter, GuildFeature, GuildHubType, GuildMFALevel, GuildNSFWLevel, GuildPremiumTier, GuildSystemChannelFlags, GuildVerificationLevel } from './payloads';
 
 /**
  * Guilds in Discord represent an isolated collection of users and channels,

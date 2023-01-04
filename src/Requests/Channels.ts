@@ -1,9 +1,10 @@
-import { Snowflake, RESTPostAPIChannelMessageJSONBody, RESTGetAPIChannelMessagesQuery, ChannelType, RESTGetAPIChannelResult, GuildTextChannelType } from 'discord-api-types/v9';
+import type { Snowflake, RESTPostAPIChannelMessageJSONBody, RESTGetAPIChannelMessagesQuery, RESTGetAPIChannelResult } from "discord-api-types/v9";
 import { DiscordAPIError, HttpRequestMethod } from '../factory/Resources';
 import { CHANNEL, CHANNEL_MESSAGE, CHANNEL_MESSAGES, GUILD_CHANNELS } from '../factory/Endpoints';
 import * as querystring from 'querystring';
 import request from '../factory/request';
 import { GuildTextChannel, DMChannel, GuildVoiceChannel, GroupDMChannel, GuildCategoryChannel, GuildAnnouncementChannel, ThreadChannel, GuildStageVoiceChannel, GuildForumChannel, Channel } from '../factory/Channels';
+import { ChannelType } from "../payloads";
 
 /** @internal */
 export function CreateMessage(channelId: Snowflake, options: RESTPostAPIChannelMessageJSONBody): Promise<string> {

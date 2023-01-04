@@ -1,39 +1,8 @@
-import {
-    ChannelType,
-    ChannelFlags,
-    APIUser,
-    APITextChannel,
-    ThreadAutoArchiveDuration,
-    APIOverwrite,
-    APINewsChannel,
-    APIGuildVoiceChannel,
-    VideoQualityMode,
-    APIGuildStageVoiceChannel,
-    APIGuildCategoryChannel,
-    APIThreadChannel,
-    APIThreadMember,
-    APIThreadMetadata,
-    APIGuildForumChannel,
-    APIGuildForumTag,
-    APIGuildForumDefaultReactionEmoji,
-    SortOrderType,
-    ForumLayoutType,
-    APIDMChannelBase,
-    GuildTextChannelType,
-    APIGuildChannel,
-    APITextBasedChannel,
-    APIChannelBase,
-    Snowflake,
-    APIGuildTextChannel,
-    APIPartialChannel,
-    APIVoiceChannelBase,
-    APIDMChannel,
-    APIGroupDMChannel,
-    RESTPostAPIChannelMessageJSONBody,
-} from "discord-api-types/v9";
+import type { APIUser, APITextChannel, APIOverwrite, APINewsChannel, APIGuildVoiceChannel, APIGuildStageVoiceChannel, APIGuildCategoryChannel, APIThreadChannel, APIThreadMember, APIThreadMetadata, APIGuildForumChannel, APIGuildForumTag, APIGuildForumDefaultReactionEmoji, APIDMChannelBase, APIGuildChannel, APITextBasedChannel, APIChannelBase, Snowflake, APIGuildTextChannel, APIPartialChannel, APIVoiceChannelBase, APIDMChannel, APIGroupDMChannel, RESTPostAPIChannelMessageJSONBody, GuildTextChannelType } from "discord-api-types/v9";
 import { CreateMessage } from "../Requests/Channels";
 import { Message } from "../Channel";
 import { Guild } from "../Guild";
+import { ChannelType, ChannelFlags, ForumLayoutType, SortOrderType, ThreadAutoArchiveDuration, VideoQualityMode, } from "../payloads";
 
 //////////////////
 // DM Channel API
@@ -51,7 +20,6 @@ export class DMChannelBase<T extends ChannelType> implements APIDMChannelBase<T>
         this.type = response.type;
         this.flags = response.flags;
         this.id = response.id;
-        this.name = response.name;
     };
     readonly recipients?: APIUser[];
     readonly lastMessageId?: string;
@@ -59,7 +27,6 @@ export class DMChannelBase<T extends ChannelType> implements APIDMChannelBase<T>
     readonly type: T;
     readonly flags?: ChannelFlags;
     readonly id: string;
-    readonly name?: string;
 };
 /**
  * The class that represents a group DM channel
@@ -196,7 +163,7 @@ export class GuildChannel<T extends ChannelType> extends ChannelBase<T> implemen
  */
 export class TextChannel<T extends GuildTextChannelType> extends GuildChannel<T> implements Omit<APITextBasedChannel<T>, 'name'>, APIGuildChannel<T> {
     /** @internal */
-    constructor (response: APIGuildTextChannel<T>, guild?: Guild) {
+    constructor(response: APIGuildTextChannel<T>, guild?: Guild) {
         super(response);
         this.name = response.name;
         this.guildId = response.guild_id;
@@ -294,7 +261,7 @@ export class TextChannel<T extends GuildTextChannelType> extends GuildChannel<T>
  * The class that represents a text channel
  */
 export class GuildTextChannel extends TextChannel<ChannelType.GuildText> implements APITextChannel {
-    constructor (response: APITextChannel) {
+    constructor(response: APITextChannel) {
         super(response);
     };
 };
@@ -303,7 +270,7 @@ export class GuildTextChannel extends TextChannel<ChannelType.GuildText> impleme
  * a channel that users can follow and crosspost into their own guild
  */
 export class GuildAnnouncementChannel extends TextChannel<ChannelType.GuildAnnouncement> implements APINewsChannel {
-    constructor (response: APINewsChannel) {
+    constructor(response: APINewsChannel) {
         super(response);
     };
 };
@@ -317,7 +284,7 @@ export class GuildAnnouncementChannel extends TextChannel<ChannelType.GuildAnnou
  */
 export class VoiceChannelBase<T extends ChannelType> extends GuildChannel<T> implements APIVoiceChannelBase<T> {
     /** @internal */
-    constructor (response: APIVoiceChannelBase<T>) {
+    constructor(response: APIVoiceChannelBase<T>) {
         super(response);
         this.bitrate = response.bitrate;
         this.userLimit = response.user_limit;
@@ -333,7 +300,7 @@ export class VoiceChannelBase<T extends ChannelType> extends GuildChannel<T> imp
  */
 export class GuildVoiceChannel extends VoiceChannelBase<ChannelType.GuildVoice> implements APIGuildVoiceChannel {
     /** @internal */
-    constructor (response: APIGuildVoiceChannel) {
+    constructor(response: APIGuildVoiceChannel) {
         super(response);
         this.lastMessageId = response.last_message_id;
         this.rateLimitPerUser = response.rate_limit_per_user;
@@ -348,7 +315,7 @@ export class GuildVoiceChannel extends VoiceChannelBase<ChannelType.GuildVoice> 
  * The class that represents a stage voice channel in a guild.
  */
 export class GuildStageVoiceChannel extends VoiceChannelBase<ChannelType.GuildStageVoice> implements APIGuildStageVoiceChannel {
-    constructor (response: APIGuildStageVoiceChannel) {
+    constructor(response: APIGuildStageVoiceChannel) {
         super(response);
     };
 };
@@ -357,7 +324,7 @@ export class GuildStageVoiceChannel extends VoiceChannelBase<ChannelType.GuildSt
  * The class that represents a category channel in a guild.
  */
 export class GuildCategoryChannel extends GuildChannel<ChannelType.GuildCategory> implements APIGuildCategoryChannel {
-    constructor (response: APIGuildCategoryChannel) {
+    constructor(response: APIGuildCategoryChannel) {
         super(response);
     };
 };
@@ -367,7 +334,7 @@ export class GuildCategoryChannel extends GuildChannel<ChannelType.GuildCategory
  */
 export class ThreadChannel extends GuildChannel<ChannelType.PublicThread | ChannelType.PrivateThread | ChannelType.AnnouncementThread> {
     /** @internal */
-    constructor (response: APIThreadChannel, guild?: Guild) {
+    constructor(response: APIThreadChannel, guild?: Guild) {
         super(response, guild);
         this.member = response.member;
         this.threadMetadata = response.thread_metadata;
@@ -397,7 +364,7 @@ export class ThreadChannel extends GuildChannel<ChannelType.PublicThread | Chann
  */
 export class GuildForumChannel extends TextChannel<ChannelType.GuildForum> {
     /** @internal */
-    constructor (response: APIGuildForumChannel) {
+    constructor(response: APIGuildForumChannel) {
         super(response);
         this.availableTags = response.available_tags;
         this.defaultReactionEmoji = response.default_reaction_emoji;

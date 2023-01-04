@@ -1,7 +1,8 @@
 import { CreateMessage, DeleteMessage, GetChannel } from './Requests/Channels';
-import type { APIActionRowComponent, APIApplication, APIAttachment, APIChannelMention, APIEmbed, APIMessage, APIMessageActionRowComponent, APIMessageActivity, APIMessageInteraction, APIMessageReference, APIReaction, APIStickerItem, APIThreadChannel, APIUser, MessageFlags, MessageType, RESTPostAPIChannelMessageJSONBody } from "discord-api-types/v9";
 import { User } from "./User";
 import { ThreadChannel } from "./factory/Channels";
+import type { APIUser, APIChannelMention, APIAttachment, APIEmbed, APIReaction, APIMessageActivity, APIApplication, APIMessageReference, APIMessage, APIMessageInteraction, APIActionRowComponent, APIMessageActionRowComponent, APIStickerItem, RESTPostAPIChannelMessageJSONBody, APIThreadChannel } from 'discord-api-types/v9';
+import { MessageFlags, MessageType } from './payloads';
 
 export class Message {
   /**

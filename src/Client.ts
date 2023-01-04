@@ -1,9 +1,10 @@
-import { ChannelType, RESTGetAPIGuildQuery, RESTGetAPIGuildResult, RESTPostAPIGuildsJSONBody, Snowflake } from 'discord-api-types/v9';
+import type { RESTGetAPIGuildQuery, RESTGetAPIGuildResult, RESTPostAPIGuildsJSONBody, Snowflake } from "discord-api-types/v9";
 import { GetChannel, DeleteChannel } from './Requests/Channels';
 import { CreateGuild, DeleteGuild, GetGuild } from './Requests/Guilds';
 import { DiscordAPIError, environ } from './factory/Resources';
 import { Guild } from './Guild';
 import { Channel, ChannelClassType } from './factory/Channels';
+import { ChannelType } from "./payloads";
 
 /**
  * A class that wraps the state of a Discord guild.

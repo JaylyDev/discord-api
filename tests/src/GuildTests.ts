@@ -1,6 +1,6 @@
 import { client, TEST_CHANNEL, TEST_GUILD } from "./config";
 import * as GameTest from "@minecraft/server-gametest";
-import { ChannelType } from "discord-api-types/v9";
+import { ChannelType } from "./discord-api";
 
 GameTest.register("GuildTests", "get_messages", async (test) => {
   const guild = await client.guild.get(TEST_GUILD);

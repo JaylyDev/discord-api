@@ -12,7 +12,6 @@ export {
   GroupDMChannel,
   DMChannel,
   PartialChannel,
-  TextBasedChannel,
   GuildChannel,
   GuildTextChannel,
   TextChannel,
@@ -30,20 +29,5 @@ export {
 } from "./factory/Resources";
 
 // discord api types exports
-export {
-  SortOrderType,
-  ForumLayoutType,
-  ChannelType,
-  VideoQualityMode,
-  MessageType,
-  MessageActivityType,
-  MessageFlags,
-  OverwriteType,
-  ThreadAutoArchiveDuration,
-  ThreadMemberFlags,
-  AllowedMentionsTypes,
-  ComponentType,
-  ButtonStyle,
-  TextInputStyle,
-  ChannelFlags,
-} from "discord-api-types/v9";
+// exports all enumeration from discord api types
+export * from './payloads'

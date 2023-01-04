@@ -1,4 +1,4 @@
-import { Snowflake, RESTGetAPIGuildQuery, RESTGetAPIAuditLogQuery, RESTPostAPIGuildsJSONBody } from "discord-api-types/v9";
+import type { Snowflake, RESTGetAPIGuildQuery, RESTGetAPIAuditLogQuery, RESTPostAPIGuildsJSONBody } from "discord-api-types/v9";
 import { HttpRequestMethod } from "../factory/Resources";
 import { GUILD, GUILDS, GUILD_AUDIT_LOGS, GUILD_MEMBER } from "../factory/Endpoints";
 import * as querystring from 'querystring';

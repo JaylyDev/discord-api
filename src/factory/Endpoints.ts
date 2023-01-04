@@ -1,5 +1,5 @@
 // Credit goes to https://github.com/abalabahaha/eris/blob/dev/lib/rest/Endpoints.js
-import { Snowflake } from "discord-api-types/globals";
+import type { Snowflake } from "discord-api-types/v9";
 
 export const ORIGINAL_INTERACTION_RESPONSE = ( appID: string, interactToken: string) => `/webhooks/${appID}/${interactToken}`;
 export const COMMAND = (applicationID: string, commandID: string) => `/applications/${applicationID}/commands/${commandID}`;
