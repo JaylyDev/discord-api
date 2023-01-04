@@ -1,9 +1,7 @@
-import { Package, UserAgent, BASE_URL, CLIENT_URL, ServerNetDebug, } from "./factory/Constants";
-import { HttpRequestMethod } from "./factory/Constants";
+import { Package, UserAgent, BASE_URL, CLIENT_URL, ServerNetDebug, HttpRequestMethod, DeepCopy, environ } from "./Resources";
 import { http, HttpHeader, HttpRequest } from "@minecraft/server-net";
-import { DeepCopy } from "./deep-copy";
 
-enum HTTPResponseCode {
+export enum HTTPResponseCode {
   /*
    * The request completed successfully.
    */
@@ -68,16 +66,15 @@ const SuccessResponseCodes: HTTPResponseCode[] = [
  * JSON body, check https://discord.com/developers/docs
  * @internal
  */
-export default async function fetch(
+export default async function request(
   url: string,
   method: HttpRequestMethod,
-  BOT_TOKEN: string,
   body?: object
 ): Promise<string> {
   const fetchUrl = CLIENT_URL + BASE_URL + url;
   const options = new HttpRequest(fetchUrl);
   const headers: HttpHeader[] = [
-    new HttpHeader("Authorization", "Bot " + BOT_TOKEN),
+    new HttpHeader("Authorization", "Bot " + environ.DISCORD_TOKEN),
     new HttpHeader(
       "User-Agent",
       `DiscordBot (${Package.homepage}, ${Package.version}) ${UserAgent.ag}/${UserAgent.version}`

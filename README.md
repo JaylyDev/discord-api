@@ -4,7 +4,8 @@ An unofficial Minecraft module that allows you to interact with Discord API, wit
 
 This repository contains the source code for:
 
-- [`minecraft-extra/discord`](https://www.npmjs.com/package/minecraft-extra) submodule.
+- [minecraft-extra/discord](https://npmjs.com/package/minecraft-extra) submodule
+- [discord-api-types](https://discord-api-types.dev/) v9 typings
 
 ## Caution
 
@@ -16,8 +17,8 @@ This package can only be used in [Minecraft](https://minecraft.net/):
 
 Following dependencies are required to use this module.
 
-- **Minecraft Bedrock Dedicated Server 1.19.40 or newer**
-- **@minecraft/server-net `1.0.0-beta`**
+- Minecraft Bedrock Dedicated Server 1.19.40 or newer
+- @minecraft/server-net `1.0.0-beta`
 
 To use this in Minecraft Dedicated Server, you can build the package from source.
 
@@ -26,12 +27,6 @@ git clone https://github.com/JaylyDev/discord-api.git
 cd discord-api
 npm i
 npm run build
-```
-
-or install the pre-built package in minecraft-extra module, available with NPM.
-
-```
-npm i minecraft-extra
 ```
 
 ## Documentation
