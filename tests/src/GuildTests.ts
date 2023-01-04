@@ -1,5 +1,6 @@
 import { client, TEST_CHANNEL, TEST_GUILD } from "./config";
 import * as GameTest from "@minecraft/server-gametest";
+import { ChannelType } from "discord-api-types/v9";
 
 GameTest.register("GuildTests", "get_messages", async (test) => {
   const guild = await client.guild.get(TEST_GUILD);
@@ -12,8 +13,9 @@ GameTest.register("GuildTests", "get_messages", async (test) => {
 
 GameTest.register("GuildTests", "send_message", async (test) => {
   const guild = await client.guild.get(TEST_GUILD);
-  guild.sendMessage(TEST_CHANNEL, { content: "Hello World." });
-  guild.sendMessage(TEST_CHANNEL, {
+  const channel = await guild.getChannel(TEST_CHANNEL, ChannelType.GuildText);
+  channel.sendMessage("Hello World");
+  channel.sendMessage({
     content: "Hello, World!",
     tts: false,
     embeds: [

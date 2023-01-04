@@ -1,8 +1,9 @@
-import type { RESTGetAPIGuildQuery, RESTGetAPIGuildResult, RESTPostAPIGuildsJSONBody, Snowflake } from 'discord-api-types/v9';
-import { GetChannel, Channel, DeleteChannel } from './Requests/Channels';
+import { ChannelType, RESTGetAPIGuildQuery, RESTGetAPIGuildResult, RESTPostAPIGuildsJSONBody, Snowflake } from 'discord-api-types/v9';
+import { GetChannel, DeleteChannel } from './Requests/Channels';
 import { CreateGuild, DeleteGuild, GetGuild } from './Requests/Guilds';
 import { DiscordAPIError, environ } from './factory/Resources';
 import { Guild } from './Guild';
+import { Channel, ChannelClassType } from './factory/Channels';
 
 /**
  * A class that wraps the state of a Discord guild.
@@ -54,8 +55,11 @@ export class ChannelOperation {
    * @param options get channel options
    * @returns channel object
    */
-  public async get(channelId: Snowflake) {
-    return await GetChannel(channelId);
+  public async get<T extends ChannelType>(channelId: Snowflake, channelType?: T): Promise<ChannelClassType[T]> {
+    const channel = await GetChannel(channelId) as ChannelClassType[T];
+    if (!channel) throw new DiscordAPIError(`Channel '${channelId}' not found`);
+    else if (typeof channelType === 'number' && channel.type !== channelType) throw new DiscordAPIError(`The type of the channel '${ChannelType[channel.type]}' is not the same as expected channel type '${ChannelType[channelType]}'.`);
+    else return channel;
   };
   /**
    * Delete a channel, or close a private message.

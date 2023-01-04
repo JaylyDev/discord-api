@@ -3,7 +3,7 @@ import { GuildVerificationLevel, GuildDefaultMessageNotifications, GuildExplicit
 import { CreateMessage, GetChannelMessages, GetGuildChannels } from './Requests/Channels';
 import { GuildMember } from './User';
 import { DiscordAPIError } from './factory/Resources';
-import { GuildChannel } from './factory/Channels';
+import { Channel, ChannelClassType, GuildChannel } from './factory/Channels';
 import { deprecate } from './factory/deprecate';
 
 /**
@@ -216,21 +216,22 @@ export class Guild {
    */
   public async getChannels() {
     const response: string = await GetGuildChannels(this.id);
-    const channels: GuildChannel<any>[] = JSON.parse(response);
+    const channels: Channel[] = JSON.parse(response);
     return channels;
   };
 
   /**
    * Get channel from current guild
-   * @param channelId 
-   * @returns A wrapped channel class if channel exist
+   * @param channelId The id of the channel
+   * @param channelType The type of the channel the API is expecting, throws error if returned channel type is not matched with expected channel type.
+   * @returns A channel object if channel exist
    */
-  async getChannel<T extends ChannelType>(channelId: Snowflake, expectedChannelType?: T): Promise<GuildChannel<T>> {
+  async getChannel<T extends ChannelType>(channelId: Snowflake, channelType?: T): Promise<ChannelClassType[T]> {
     const channels = await this.getChannels();
     const channelIndex = channels.findIndex(({id}) => id === channelId);
-    const channel = channels[channelIndex];
+    const channel = channels[channelIndex] as ChannelClassType[T];
     if (!channel) throw new DiscordAPIError(`Channel '${channelId}' not found in guild '${this.name}'`);
-    else if (typeof expectedChannelType === 'number' && channel.type !== expectedChannelType) throw new DiscordAPIError(`The type of the channel '${ChannelType[channel.type]}' is not the same as expected channel type '${ChannelType[expectedChannelType]}'.`);
+    else if (typeof channelType === 'number' && channel.type !== channelType) throw new DiscordAPIError(`The type of the channel '${ChannelType[channel.type]}' is not the same as expected channel type '${ChannelType[channelType]}'.`);
     else return channel;
   };
 

@@ -1,9 +1,9 @@
 import { Snowflake, RESTPostAPIChannelMessageJSONBody, RESTGetAPIChannelMessagesQuery, ChannelType, RESTGetAPIChannelResult, GuildTextChannelType } from 'discord-api-types/v9';
-import { HttpRequestMethod, ServerNetDebug } from '../factory/Resources';
+import { DiscordAPIError, HttpRequestMethod } from '../factory/Resources';
 import { CHANNEL, CHANNEL_MESSAGE, CHANNEL_MESSAGES, GUILD_CHANNELS } from '../factory/Endpoints';
 import * as querystring from 'querystring';
 import request from '../factory/request';
-import { GuildTextChannel, DMChannel, GuildVoiceChannel, GroupDMChannel, GuildCategoryChannel, GuildAnnouncementChannel, ThreadChannel, GuildStageVoiceChannel, GuildForumChannel } from '../factory/Channels';
+import { GuildTextChannel, DMChannel, GuildVoiceChannel, GroupDMChannel, GuildCategoryChannel, GuildAnnouncementChannel, ThreadChannel, GuildStageVoiceChannel, GuildForumChannel, Channel } from '../factory/Channels';
 
 /** @internal */
 export function CreateMessage(channelId: Snowflake, options: RESTPostAPIChannelMessageJSONBody): Promise<string> {
@@ -39,7 +39,7 @@ export function DeleteMessage(channelId: Snowflake, messageId: Snowflake) {
 };
 
 /** @internal */
-export async function GetChannel(channelId: Snowflake) {
+export async function GetChannel(channelId: Snowflake): Promise<Channel> {
   const method = HttpRequestMethod.GET;
   const path = CHANNEL(channelId);
   const response: string = await request(path, method);
@@ -67,8 +67,7 @@ export async function GetChannel(channelId: Snowflake) {
       return new GuildForumChannel(result);
 
     default:
-      ServerNetDebug.warn('Could not identify type of channel:', result.type);
-      return result;
+      throw new DiscordAPIError(`Could not identify type of channel: ${result.type}`);
   }
 };
 
@@ -77,5 +76,3 @@ export function GetGuildChannels(guildId: Snowflake) {
   const path = GUILD_CHANNELS(guildId);
   return request(path, method);
 };
-
-export type Channel = GuildTextChannel<GuildTextChannelType> | DMChannel | GuildVoiceChannel | GroupDMChannel | GuildCategoryChannel | GuildAnnouncementChannel | ThreadChannel | GuildStageVoiceChannel | GuildForumChannel;

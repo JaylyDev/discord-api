@@ -146,51 +146,6 @@ export class ChannelBase<T extends ChannelType> extends PartialChannel implement
     readonly type: T;
     readonly flags?: ChannelFlags;
 }
-export class TextBasedChannel<T extends ChannelType> extends ChannelBase<T> implements APITextBasedChannel<T> {
-    /** @internal */
-    constructor(response: APITextBasedChannel<T>) {
-        super(response);
-        this.lastMessageId = response.last_message_id;
-        this.lastPinTimestamp = response.last_pin_timestamp;
-        this.rateLimitPerUser = response.rate_limit_per_user;
-    };
-    /**
-     * The id of the last message sent in this channel (may not point to an existing or valid message)
-     */
-    readonly lastMessageId?: Snowflake | null;
-    /**
-     * When the last pinned message was pinned.
-     * This may be `null` in events such as `GUILD_CREATE` when a message is not pinned
-     */
-    readonly lastPinTimestamp?: string | null;
-    /**
-     * Amount of seconds a user has to wait before sending another message (0-21600);
-     * bots, as well as users with the permission `MANAGE_MESSAGES` or `MANAGE_CHANNELS`, are unaffected
-     *
-     * `rate_limit_per_user` also applies to thread creation. Users can send one message and create one thread during each `rate_limit_per_user` interval.
-     *
-     * For thread channels, `rate_limit_per_user` is only returned if the field is set to a non-zero and non-null value.
-     * The absence of this field in API calls and Gateway events should indicate that slowmode has been reset to the default value.
-     */
-    readonly rateLimitPerUser?: number;
-    /**
-     * Post a message to a guild text or DM channel. Returns a message object.
-     */
-    async sendMessage(options: string | RESTPostAPIChannelMessageJSONBody) {
-        if (typeof options === 'string') {
-            const requestOptions: RESTPostAPIChannelMessageJSONBody = {
-                content: options,
-            };
-            const response = await CreateMessage(this.id, requestOptions);
-            return new Message(JSON.parse(response));
-        }
-        else if (typeof options === 'object') {
-            const response = await CreateMessage(this.id, options);
-            return new Message(JSON.parse(response));
-        }
-        else throw new TypeError(`Argument of type '${typeof options}' is not assignable to parameter of type 'string | RESTPostAPIChannelMessageJSONBody'.`);
-    };
-};
 /**
  * The class that represents a guild channel
  */
@@ -239,7 +194,7 @@ export class GuildChannel<T extends ChannelType> extends ChannelBase<T> implemen
 /**
  * The class that represents a text channel in a guild
  */
-export class GuildTextChannel<T extends GuildTextChannelType> extends TextBasedChannel<T> implements APIGuildTextChannel<T> {
+export class TextChannel<T extends GuildTextChannelType> extends GuildChannel<T> implements Omit<APITextBasedChannel<T>, 'name'>, APIGuildChannel<T> {
     /** @internal */
     constructor (response: APIGuildTextChannel<T>, guild?: Guild) {
         super(response);
@@ -253,6 +208,9 @@ export class GuildTextChannel<T extends GuildTextChannelType> extends TextBasedC
         this.defaultThreadRateLimitPerUser = response.default_thread_rate_limit_per_user;
         this.topic = response.topic;
         this.guild = guild;
+        this.lastMessageId = response.last_message_id;
+        this.lastPinTimestamp = response.last_pin_timestamp;
+        this.rateLimitPerUser = response.rate_limit_per_user;
     }
     readonly name: string;
     /**
@@ -295,12 +253,47 @@ export class GuildTextChannel<T extends GuildTextChannelType> extends TextBasedC
      * The guild object (may be missing for some channel objects received over gateway guild dispatches)
      */
     readonly guild: Guild;
-}
-
+    /**
+     * The id of the last message sent in this channel (may not point to an existing or valid message)
+     */
+    readonly lastMessageId?: Snowflake | null;
+    /**
+     * When the last pinned message was pinned.
+     * This may be `null` in events such as `GUILD_CREATE` when a message is not pinned
+     */
+    readonly lastPinTimestamp?: string | null;
+    /**
+     * Amount of seconds a user has to wait before sending another message (0-21600);
+     * bots, as well as users with the permission `MANAGE_MESSAGES` or `MANAGE_CHANNELS`, are unaffected
+     *
+     * `rate_limit_per_user` also applies to thread creation. Users can send one message and create one thread during each `rate_limit_per_user` interval.
+     *
+     * For thread channels, `rate_limit_per_user` is only returned if the field is set to a non-zero and non-null value.
+     * The absence of this field in API calls and Gateway events should indicate that slowmode has been reset to the default value.
+     */
+    readonly rateLimitPerUser?: number;
+    /**
+     * Post a message to a guild text or DM channel. Returns a message object.
+     */
+    async sendMessage(options: string | RESTPostAPIChannelMessageJSONBody) {
+        if (typeof options === 'string') {
+            const requestOptions: RESTPostAPIChannelMessageJSONBody = {
+                content: options,
+            };
+            const response = await CreateMessage(this.id, requestOptions);
+            return new Message(JSON.parse(response));
+        }
+        else if (typeof options === 'object') {
+            const response = await CreateMessage(this.id, options);
+            return new Message(JSON.parse(response));
+        }
+        else throw new TypeError(`Argument of type '${typeof options}' is not assignable to parameter of type 'string | RESTPostAPIChannelMessageJSONBody'.`);
+    };
+};
 /**
  * The class that represents a text channel
  */
-export class TextChannel extends GuildTextChannel<ChannelType.GuildText> implements APITextChannel {
+export class GuildTextChannel extends TextChannel<ChannelType.GuildText> implements APITextChannel {
     constructor (response: APITextChannel) {
         super(response);
     };
@@ -309,7 +302,7 @@ export class TextChannel extends GuildTextChannel<ChannelType.GuildText> impleme
  * The class that represents an announcement channel in a guild,
  * a channel that users can follow and crosspost into their own guild
  */
-export class GuildAnnouncementChannel extends GuildTextChannel<ChannelType.GuildAnnouncement> implements APINewsChannel {
+export class GuildAnnouncementChannel extends TextChannel<ChannelType.GuildAnnouncement> implements APINewsChannel {
     constructor (response: APINewsChannel) {
         super(response);
     };
@@ -402,7 +395,7 @@ export class ThreadChannel extends GuildChannel<ChannelType.PublicThread | Chann
 /**
  * The class that represents a forum channel in a guild.
  */
-export class GuildForumChannel extends GuildTextChannel<ChannelType.GuildForum> {
+export class GuildForumChannel extends TextChannel<ChannelType.GuildForum> {
     /** @internal */
     constructor (response: APIGuildForumChannel) {
         super(response);
@@ -416,3 +409,21 @@ export class GuildForumChannel extends GuildTextChannel<ChannelType.GuildForum> 
     readonly defaultSortOrder: SortOrderType | null;
     readonly defaultForumLayout: ForumLayoutType;
 };
+
+export type ChannelClassType = {
+    [x in ChannelType]: Channel;
+} & {
+    [ChannelType.AnnouncementThread]: ThreadChannel;
+    [ChannelType.DM]: DMChannel;
+    [ChannelType.GroupDM]: GroupDMChannel;
+    [ChannelType.GuildAnnouncement]: GuildAnnouncementChannel;
+    [ChannelType.GuildCategory]: GuildCategoryChannel;
+    [ChannelType.GuildForum]: GuildForumChannel;
+    [ChannelType.GuildStageVoice]: GuildStageVoiceChannel;
+    [ChannelType.GuildText]: GuildTextChannel;
+    [ChannelType.GuildVoice]: GuildVoiceChannel;
+    [ChannelType.PrivateThread]: ThreadChannel;
+    [ChannelType.PublicThread]: ThreadChannel;
+};;
+
+export type Channel = ThreadChannel | DMChannel | GroupDMChannel | GuildAnnouncementChannel | GuildCategoryChannel | GuildForumChannel | GuildStageVoiceChannel | GuildTextChannel | GuildVoiceChannel | ThreadChannel | ThreadChannel;
